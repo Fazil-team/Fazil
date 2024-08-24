@@ -25,7 +25,7 @@ public class SettingsController extends BaseController {
     @PutMapping
     public response saveSetting(@RequestBody SysSettings setting) {
         service.update(setting);
-        return null;
+        return success();
     }
 
     @GetMapping

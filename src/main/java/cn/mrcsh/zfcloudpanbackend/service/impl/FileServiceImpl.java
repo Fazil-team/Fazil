@@ -105,7 +105,11 @@ public class FileServiceImpl implements FileService {
     public PageStructure<FileInfo> getFileList(HttpServletRequest request, String filePid, Integer page_size, Integer current_page) {
         String userId = (String) StpUtil.getLoginId();
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("file_pid", filePid).eq("file_owner", userId);
+        queryWrapper
+                .eq("file_pid", filePid)
+                .eq("file_owner", userId)
+                .eq("status","completed")
+        ;
         Page<FileInfo> page = new Page<>(current_page, page_size);
         mapper.selectPage(page, queryWrapper);
         PageStructure<FileInfo> pageStructure = new PageStructure<>();

@@ -65,6 +65,11 @@ public class WSManager {
         xws.setData(msg);
         xws.setType(type.getType());
         xws.setTimestamp(System.currentTimeMillis());
-        session.getAsyncRemote().sendText(JSON.toJSONString(xws));
+        try {
+            session.getAsyncRemote().sendText(JSON.toJSONString(xws));
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("消息发送失败");
+        }
     }
 }
