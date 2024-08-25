@@ -1,5 +1,6 @@
 package cn.mrcsh.zfcloudpanbackend.service;
 
+import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,11 +14,13 @@ public interface FileService {
 
     void transform(FileInfo fileInfo) throws IOException;
 
-    PageStructure<FileInfo> getFileList(HttpServletRequest request, String filePid, Integer page_size, Integer current_page);
+    PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page);
 
     void download(HttpServletRequest request, HttpServletResponse response, String fileId, String type);
 
     boolean can_upload(long file_size);
 
     void removeFile(String fileId);
+
+    void createFolder(FolderDto dto);
 }

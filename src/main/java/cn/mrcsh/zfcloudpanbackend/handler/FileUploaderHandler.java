@@ -36,6 +36,7 @@ public class FileUploaderHandler {
             fileInfo.setChunkIndex(uploadFileDto.getChunk_index());
             fileInfo.setFile(uploadFileDto.getFile());
             fileInfo.setFilePid(uploadFileDto.getFile_pid());
+            fileInfo.setFilePath(uploadFileDto.getFilePath());
             if (uploadFileDto.getChunk_index() == 0) {
                 fileInfo.setFileId(IdUtil.getSnowflakeNextIdStr());
             } else {

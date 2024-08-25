@@ -1,7 +1,9 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
+import cn.hutool.core.util.IdUtil;
 import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
 import cn.mrcsh.zfcloudpanbackend.annotation.Lock;
+import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.UploadFileDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
@@ -46,9 +48,15 @@ public class FileController extends BaseController {
         return error("空间不足");
     }
 
+    @PostMapping("/folder")
+    public response newFolder(@RequestBody FolderDto folderDto){
+        fileService.createFolder(folderDto);
+        return success();
+    }
+
     @GetMapping
-    public response getFiles(HttpServletRequest request, String filePid, Integer page_size, Integer current_page) {
-        PageStructure<FileInfo> page = fileService.getFileList(request, filePid,page_size,current_page);
+    public response getFiles(HttpServletRequest request, String path, Integer page_size, Integer current_page) {
+        PageStructure<FileInfo> page = fileService.getFileList(request, path,page_size,current_page);
         return success(page);
     }
 

@@ -19,8 +19,10 @@ public class FileInfo extends BaseEntity {
     private String fileName;
     // 文件大小 单位 byte
     private Long fileSize;
-    // 文件位置
+    // 文件磁盘位置
     private String fileAbsPath;
+    // 文件位置
+    private String filePath;
     // 文件类型
     private String fileType;
     // 文件MD5值

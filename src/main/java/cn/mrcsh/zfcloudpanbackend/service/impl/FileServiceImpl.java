@@ -2,8 +2,10 @@ package cn.mrcsh.zfcloudpanbackend.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.config.Temp;
+import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -102,11 +106,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String filePid, Integer page_size, Integer current_page) {
+    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page) {
         String userId = (String) StpUtil.getLoginId();
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper
-                .eq("file_pid", filePid)
+                .eq("file_path", path)
                 .eq("file_owner", userId)
                 .eq("status","completed")
         ;
@@ -169,5 +173,25 @@ public class FileServiceImpl implements FileService {
         deleteFile.delete();
         user.setUsedStorage(user.getUsedStorage()-fileInfo.getFileSize());
         userService.updateUser(user);
+    }
+
+    @Override
+    public void createFolder(FolderDto dto) {
+        QueryWrapper<FileInfo> fileInfoQueryWrapper = new QueryWrapper<>();
+        fileInfoQueryWrapper.eq("file_owner", StpUtil.getLoginId()).eq("file_type", "folder");
+        List<FileInfo> fileInfos = mapper.selectList(fileInfoQueryWrapper);
+        List<FileInfo> list = fileInfos.stream().filter(fileInfo -> fileInfo.getFileName().equals(dto.getFolderName())).toList();
+        if(!list.isEmpty()){
+            dto.setFolderName(dto.getFolderName()+ UUID.randomUUID().toString().replaceAll("-",""));
+        }
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setFileId(IdUtil.getSnowflakeNextIdStr());
+        fileInfo.setFileName(dto.getFolderName());
+        fileInfo.setFilePath(dto.getFilePath());
+        fileInfo.setFileType("folder");
+        fileInfo.setFileOwner((String) StpUtil.getLoginId());
+        fileInfo.setStatus("completed");
+        fileInfo.setFileSize(0L);
+        mapper.insert(fileInfo);
     }
 }
