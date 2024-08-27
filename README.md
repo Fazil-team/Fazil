@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://t.me/cloudharry" target="_blank">加入我们的 Telegram 群组</a>
+  <a href="https://t.me/cloudharry" target="_blank">Telegram 群组</a>
 </p>
 
 # Fazil 网盘系统
