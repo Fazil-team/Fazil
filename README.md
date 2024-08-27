@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="path_to_your_logo_image" alt="Fazil Logo" width="200"/>
+  <img src="/logo.png" alt="Fazil Logo" width="200"/>
 </p>
 
 <p align="center">
