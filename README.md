@@ -1,8 +1,8 @@
 # Fazil 网盘系统
 
-![License](https://img.shields.io/badge/license-MIT-brightgreen)
+![License](https://img.shields.io/badge/license-AGPL--3.0-brightgreen)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![GitHub Stars](https://img.shields.io/github/stars/yourusername/fazil)
+![GitHub Stars](https://img.shields.io/github/stars/Fazil-team/Fazil)
 
 Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访问，适合个人或小型团队的文件管理需求。
 
@@ -19,5 +19,5 @@ Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访�
 ### 1. 克隆仓库
 
 ```bash
-git clone https://github.com/yourusername/fazil.git
-cd fazil
+git clone https://github.com/Fazil-team/Fazil.git
+cd Fazil
