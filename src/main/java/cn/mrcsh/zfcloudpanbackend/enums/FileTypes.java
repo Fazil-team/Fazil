@@ -3,7 +3,7 @@ package cn.mrcsh.zfcloudpanbackend.enums;
 public enum FileTypes {
     IMG("img", new String[]{".png", ".jpg", ".gif"}),
     EXE("exe", new String[]{".exe"}),
-    DOC("doc", new String[]{".doc"}),
+    DOC("doc", new String[]{".docx"}),
     PDF("pdf", new String[]{".pdf"}),
     PSD("psd", new String[]{".psd"}),
     EXCEL("excel", new String[]{".xls", ".xlsx"}),

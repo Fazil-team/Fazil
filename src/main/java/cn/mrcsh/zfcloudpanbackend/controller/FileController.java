@@ -10,6 +10,7 @@ import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import cn.mrcsh.zfcloudpanbackend.handler.FileUploaderHandler;
 import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
+import cn.mrcsh.zfcloudpanbackend.utils.RedisUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +36,7 @@ public class FileController extends BaseController {
 
     @Autowired
     private UserService userService;
+
 
     @PostMapping
     @AccessLog()
@@ -67,7 +69,18 @@ public class FileController extends BaseController {
     }
 
     @GetMapping("/download_file")
-    public void download_file(HttpServletRequest request, HttpServletResponse response, String file_id, String type) throws IOException {
-        fileService.download(request, response, file_id, type);
+    public void download_file(HttpServletRequest request, HttpServletResponse response, String file_id) throws IOException {
+        fileService.download(request, response, file_id);
+    }
+
+    @GetMapping("/perview/{accessKey}")
+    public void preview(HttpServletResponse response,@PathVariable String accessKey){
+        fileService.previewFile(accessKey, response);
+    }
+
+    @GetMapping("/gen_key")
+    public response gen_key(String file_id){
+        String key = fileService.genAccessKey(file_id);
+        return success(key);
     }
 }

@@ -9,10 +9,12 @@ import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
+import cn.mrcsh.zfcloudpanbackend.enums.ENV;
 import cn.mrcsh.zfcloudpanbackend.mapper.FileInfoMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
 import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
+import cn.mrcsh.zfcloudpanbackend.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +33,9 @@ public class FileServiceImpl implements FileService {
 
     @Value("${sa-token.token-name}")
     private String tokenKey;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Autowired
     private FileInfoMapper mapper;
@@ -54,13 +59,13 @@ public class FileServiceImpl implements FileService {
             fileInfo.setUpdateTime(new Date());
             mapper.updateById(fileInfo);
         }
-        if(fileInfo.getChunkNum().equals(fileInfo.getChunkIndex()+1)){
+        if (fileInfo.getChunkNum().equals(fileInfo.getChunkIndex() + 1)) {
             Temp.num++;
             String loginId = (String) StpUtil.getLoginId();
             User user = userMapper.selectById(loginId);
-            user.setUsedStorage(user.getUsedStorage()+fileInfo.getFileSize());
+            user.setUsedStorage(user.getUsedStorage() + fileInfo.getFileSize());
             userMapper.updateById(user);
-            System.out.println("完事儿"+Temp.num+"|"+user.getUsedStorage()+"|"+fileInfo.getFileSize()+"|"+(user.getUsedStorage()+fileInfo.getFileSize()));
+            System.out.println("完事儿" + Temp.num + "|" + user.getUsedStorage() + "|" + fileInfo.getFileSize() + "|" + (user.getUsedStorage() + fileInfo.getFileSize()));
         }
         saveFile(fileInfo);
     }
@@ -112,7 +117,7 @@ public class FileServiceImpl implements FileService {
         queryWrapper
                 .eq("file_path", path)
                 .eq("file_owner", userId)
-                .eq("status","completed")
+                .eq("status", "completed")
         ;
         Page<FileInfo> page = new Page<>(current_page, page_size);
         mapper.selectPage(page, queryWrapper);
@@ -123,16 +128,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void download(HttpServletRequest request, HttpServletResponse response, String fileId, String type) {
+    public void download(HttpServletRequest request, HttpServletResponse response, String fileId) {
         try {
-            String login_id = null;
-            if (!type.equals("img")) {
-                login_id = (String) StpUtil.getLoginId();
-            }
             FileInfo fileInfo = mapper.selectById(fileId);
-            if (login_id == null && !type.equals("img")) {
-                throw new NullPointerException("Null");
-            }
             // 下载
             File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
             response.setContentLengthLong(file.length());
@@ -165,13 +163,13 @@ public class FileServiceImpl implements FileService {
                 .eq("file_owner", user.getId())
                 .eq("file_id", fileId);
         FileInfo fileInfo = mapper.selectOne(queryWrapper);
-        if(fileInfo == null){
+        if (fileInfo == null) {
             throw new NullPointerException("无效文件");
         }
         mapper.deleteById(fileId);
-        File deleteFile = new File(config.getDataSavePath()+File.separator+fileInfo.getFileAbsPath());
+        File deleteFile = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
         deleteFile.delete();
-        user.setUsedStorage(user.getUsedStorage()-fileInfo.getFileSize());
+        user.setUsedStorage(user.getUsedStorage() - fileInfo.getFileSize());
         userService.updateUser(user);
     }
 
@@ -181,8 +179,8 @@ public class FileServiceImpl implements FileService {
         fileInfoQueryWrapper.eq("file_owner", StpUtil.getLoginId()).eq("file_type", "folder");
         List<FileInfo> fileInfos = mapper.selectList(fileInfoQueryWrapper);
         List<FileInfo> list = fileInfos.stream().filter(fileInfo -> fileInfo.getFileName().equals(dto.getFolderName())).toList();
-        if(!list.isEmpty()){
-            dto.setFolderName(dto.getFolderName()+ UUID.randomUUID().toString().replaceAll("-",""));
+        if (!list.isEmpty()) {
+            dto.setFolderName(dto.getFolderName() + UUID.randomUUID().toString().replaceAll("-", ""));
         }
         FileInfo fileInfo = new FileInfo();
         fileInfo.setFileId(IdUtil.getSnowflakeNextIdStr());
@@ -193,5 +191,39 @@ public class FileServiceImpl implements FileService {
         fileInfo.setStatus("completed");
         fileInfo.setFileSize(0L);
         mapper.insert(fileInfo);
+    }
+
+    @Override
+    public void previewFile(String accessKey, HttpServletResponse response) {
+        try {
+            Object o = redisUtil.get(ENV.REDIS_KEY_OF_PREVIEW_KEY + accessKey);
+            if (o == null) {
+                response.getWriter().write("404");
+                return;
+            }
+            String fileId = (String) o;
+            FileInfo fileInfo = mapper.selectById(fileId);
+            // 下载
+            File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
+            response.setContentLengthLong(file.length());
+            FileInputStream fis = new FileInputStream(file);
+            byte[] buffer = new byte[config.getBufferSize()];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                response.getOutputStream().write(buffer, 0, bytesRead);
+            }
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+            fis.close();
+        } catch (Exception e) {
+        }
+
+    }
+
+    @Override
+    public String genAccessKey(String fileId) {
+        String snowflakeNextIdStr = IdUtil.getSnowflakeNextIdStr();
+        redisUtil.set(ENV.REDIS_KEY_OF_PREVIEW_KEY+snowflakeNextIdStr, fileId);
+        return snowflakeNextIdStr;
     }
 }

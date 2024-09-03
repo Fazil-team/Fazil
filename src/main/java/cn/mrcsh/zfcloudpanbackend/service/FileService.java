@@ -16,11 +16,15 @@ public interface FileService {
 
     PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page);
 
-    void download(HttpServletRequest request, HttpServletResponse response, String fileId, String type);
+    void download(HttpServletRequest request, HttpServletResponse response, String fileId);
 
     boolean can_upload(long file_size);
 
     void removeFile(String fileId);
 
     void createFolder(FolderDto dto);
+
+    void previewFile(String accessKey, HttpServletResponse response);
+
+    String genAccessKey(String fileId);
 }
