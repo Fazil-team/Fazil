@@ -6,18 +6,18 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: Cuishihao123
-    url: jdbc:mysql://192.168.100.225:3306/zfcloudpandb?timeZone=Asia/Shanghai
+    url: jdbc:mysql://192.168.100.114:3306/zfpandb?timeZone=Asia/Shanghai
     # redis配置
   data:
     redis:
       # Redis数据库索引（默认为0）
       database: 0
       # Redis服务器地址
-      host: 192.168.100.225
+      host: 192.168.100.114
       # Redis服务器连接端口
       port: 6379
       # Redis服务器连接密码（默认为空）
-      password: 123456
+      password: Cuishihao123
       # 连接超时时间
       timeout: 10s
       lettuce:
@@ -64,9 +64,9 @@ minio:
   # 存储桶的名字
   bucketName: develop
   # 服务后端地址
-  endpoint: http://192.168.100.225:9000
+  endpoint: http://192.168.100.114:9000
   # Key
-  accessKey: wEbf4oaT95uiLLSTD1Yz
+  accessKey: 5va4NKmEtkyQWNnLibdG
   # Secret
-  secretKey: CwvlTOvXqifDXzrl1ywuRck62mVXG84ZZyNCXAn9
+  secretKey: iGDIh9co9tAhWkUgRE37QjrRpZ1cmp6bPERm2For
 
