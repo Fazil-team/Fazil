@@ -10,6 +10,7 @@ public enum FileTypes {
     MEDIA("media", new String[]{".mkv",".mp4"}),
     ZIP("zip", new String[]{".zip",".rar",".gz",".tar",".xz",".7z"}),
     CODE("code", new String[]{".code", ".c",".h",".java",".js",".cpp",".ts",".vue",".jsx",".tsx"}),
+    TXT("txt", new String[]{".txt"}),
     UNKNOWN("unknown", new String[]{""}),
     ;
 
