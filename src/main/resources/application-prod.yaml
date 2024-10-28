@@ -5,7 +5,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
+    password: Cuishihao123
     url: jdbc:mysql://127.0.0.1:3306/zfcloudpandb?timeZone=Asia/Shanghai
     # redis配置
   data:

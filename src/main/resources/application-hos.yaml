@@ -5,19 +5,19 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
-    url: jdbc:mysql://127.0.0.1:3306/zfcloudpandb?timeZone=Asia/Shanghai
+    password: Cuishihao123
+    url: jdbc:mysql://host.mrcsh.cn:3306/zfcloudpandb?timeZone=Asia/Shanghai
     # redis配置
   data:
     redis:
       # Redis数据库索引（默认为0）
       database: 0
       # Redis服务器地址
-      host: 127.0.0.1
+      host: host.mrcsh.cn
       # Redis服务器连接端口
       port: 6379
       # Redis服务器连接密码（默认为空）
-      password:
+      password: Cuishihao123
       # 连接超时时间
       timeout: 10s
       lettuce:
