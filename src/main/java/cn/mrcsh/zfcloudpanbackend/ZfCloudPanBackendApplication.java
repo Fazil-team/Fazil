@@ -18,6 +18,4 @@ public class ZfCloudPanBackendApplication {
         SpringApplication.run(ZfCloudPanBackendApplication.class, args);
     }
 
-
-
 }

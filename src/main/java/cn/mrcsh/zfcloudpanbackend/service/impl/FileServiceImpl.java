@@ -3,14 +3,19 @@ package cn.mrcsh.zfcloudpanbackend.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.config.Temp;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
+import cn.mrcsh.zfcloudpanbackend.entity.po.Share;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
+import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareCVo;
+import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareVo;
 import cn.mrcsh.zfcloudpanbackend.enums.ENV;
 import cn.mrcsh.zfcloudpanbackend.mapper.FileInfoMapper;
+import cn.mrcsh.zfcloudpanbackend.mapper.ShareMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
 import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
@@ -24,6 +29,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -48,6 +55,9 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private APPConfig config;
+
+    @Autowired
+    private ShareMapper shareMapper;
 
     @Override
     public synchronized void save(FileInfo fileInfo) throws IOException {
@@ -223,7 +233,62 @@ public class FileServiceImpl implements FileService {
     @Override
     public String genAccessKey(String fileId) {
         String snowflakeNextIdStr = IdUtil.getSnowflakeNextIdStr();
-        redisUtil.set(ENV.REDIS_KEY_OF_PREVIEW_KEY+snowflakeNextIdStr, fileId);
+        redisUtil.set(ENV.REDIS_KEY_OF_PREVIEW_KEY + snowflakeNextIdStr, fileId);
         return snowflakeNextIdStr;
+    }
+
+    @Override
+    public Share shareFile(Share share) {
+        share.setShareUserId((String) StpUtil.getLoginId());
+        share.setShareId(IdUtil.getSnowflakeNextIdStr());
+        share.setCreateTime(new Date());
+        if (share.getSharePwd() == null || share.getSharePwd().isEmpty()) {
+            share.setSharePwd(RandomUtil.randomNumbers(6));
+        }
+        share.setShareUrl(config.getClientBaseURL() + "/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
+        shareMapper.insert(share);
+        return share;
+    }
+
+    @Override
+    public FileInfo checkShareCodes(String shareCode, String shareId) {
+        Share share = shareMapper.selectById(shareId);
+        if (share == null) {
+            return null;
+        }
+        if (shareCode == null) {
+            return null;
+        }
+
+        if (!shareCode.equals(share.getSharePwd())) {
+            return null;
+        }
+        return mapper.selectById(share.getShareFileId());
+    }
+
+    @Override
+    public ShareVo getShareUserInfo(String shareId) {
+        Share share = shareMapper.selectById(shareId);
+        User user = userMapper.selectById(share.getShareUserId());
+        ShareVo shareVo = new ShareVo();
+        shareVo.setShareTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(share.getCreateTime()));
+        shareVo.setShareUsername(user.getUserName());
+        shareVo.setShareUserAvatar(user.getAvatar());
+        return shareVo;
+    }
+
+    @Override
+    public List<ShareCVo> shares() {
+        List<ShareCVo> res = new ArrayList<>();
+        QueryWrapper<Share> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("share_user_id", StpUtil.getLoginId());
+        List<Share> shares = shareMapper.selectList(queryWrapper);
+        shares.forEach(share -> {
+            ShareCVo shareCVo = new ShareCVo();
+            shareCVo.setShare(share);
+            shareCVo.setFileInfo(mapper.selectById(share.getShareFileId()));
+            res.add(shareCVo);
+        });
+        return res;
     }
 }

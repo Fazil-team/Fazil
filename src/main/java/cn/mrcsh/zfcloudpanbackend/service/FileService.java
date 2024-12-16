@@ -2,11 +2,15 @@ package cn.mrcsh.zfcloudpanbackend.service;
 
 import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
+import cn.mrcsh.zfcloudpanbackend.entity.po.Share;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
+import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareCVo;
+import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareVo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface FileService {
 
@@ -27,4 +31,12 @@ public interface FileService {
     void previewFile(String accessKey, HttpServletResponse response);
 
     String genAccessKey(String fileId);
+
+    Share shareFile(Share share);
+
+    FileInfo checkShareCodes(String shareCode, String fileId);
+
+    ShareVo getShareUserInfo(String shareId);
+
+    List<ShareCVo> shares();
 }

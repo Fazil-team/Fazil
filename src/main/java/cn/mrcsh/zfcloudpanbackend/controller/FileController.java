@@ -1,12 +1,17 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.util.IdUtil;
 import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
 import cn.mrcsh.zfcloudpanbackend.annotation.Lock;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.UploadFileDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
+import cn.mrcsh.zfcloudpanbackend.entity.po.Share;
+import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
+import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareCVo;
+import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareVo;
 import cn.mrcsh.zfcloudpanbackend.handler.FileUploaderHandler;
 import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
@@ -20,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/stream")
@@ -40,6 +46,7 @@ public class FileController extends BaseController {
 
     @PostMapping
     @AccessLog()
+    @SaCheckLogin
     public response upload_file(UploadFileDto uploadFileDto) throws InterruptedException, IOException {
         // 检查空间是否足够
         if (fileService.can_upload(uploadFileDto.getFile_size())) {
@@ -51,36 +58,77 @@ public class FileController extends BaseController {
     }
 
     @PostMapping("/folder")
+    @SaCheckLogin
+    @AccessLog()
     public response newFolder(@RequestBody FolderDto folderDto){
         fileService.createFolder(folderDto);
         return success();
     }
 
     @GetMapping
+    @SaCheckLogin
+    @AccessLog()
     public response getFiles(HttpServletRequest request, String path, Integer page_size, Integer current_page) {
         PageStructure<FileInfo> page = fileService.getFileList(request, path,page_size,current_page);
         return success(page);
     }
 
     @DeleteMapping
+    @SaCheckLogin
+    @AccessLog()
     public response deleteFile(String file_id){
         fileService.removeFile(file_id);
         return success();
     }
 
     @GetMapping("/download_file")
+    @AccessLog()
     public void download_file(HttpServletRequest request, HttpServletResponse response, String file_id) throws IOException {
         fileService.download(request, response, file_id);
     }
 
     @GetMapping("/perview/{accessKey}")
+    @SaCheckLogin
+    @AccessLog()
     public void preview(HttpServletResponse response,@PathVariable String accessKey){
         fileService.previewFile(accessKey, response);
     }
 
     @GetMapping("/gen_key")
+    @SaCheckLogin
+    @AccessLog()
     public response gen_key(String file_id){
         String key = fileService.genAccessKey(file_id);
         return success(key);
+    }
+
+    @PostMapping("/share")
+    @SaCheckLogin
+    @AccessLog()
+    public response share(@RequestBody Share share){
+       Share res = fileService.shareFile(share);
+       return success(res);
+    }
+
+    @GetMapping("/check_share_code")
+    @AccessLog()
+    public response checkShareCode(String share_code, String share_id){
+        FileInfo fileInfo = fileService.checkShareCodes(share_code, share_id);
+        return success(fileInfo);
+    }
+
+    @GetMapping("/get_share_user_info")
+    @AccessLog()
+    public response getShareUserInfo(String share_id){
+        ShareVo shareVo = fileService.getShareUserInfo(share_id);
+        return success(shareVo);
+    }
+
+    @GetMapping("/shares")
+    @SaCheckLogin
+    @AccessLog()
+    public response getAllShares(){
+        List<ShareCVo> shares = fileService.shares();
+        return success(shares);
     }
 }

@@ -13,4 +13,6 @@ public class APPConfig {
     private String dataSavePath;
     @Value("${app.buffer-size}")
     private Integer bufferSize;
+    @Value("${app.client-baseurl}")
+    private String clientBaseURL;
 }

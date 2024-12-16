@@ -33,14 +33,6 @@ spring:
 
 server:
   port: 8080
-
-app:
-  # 默认用户注册角色ID
-  default-role-id: 0
-  # 文件存储位置
-  data-save-path: D:/Pan
-  # 缓冲区大小
-  buffer-size: 8192
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
   # token 名称（同时也是 cookie 名称）
@@ -58,7 +50,6 @@ sa-token:
   # 是否输出操作日志
   is-log: true
   jwt-secret-key: hksahdlakshsakdhasldasd
-
 minio:
   # 存储桶的名字
   bucketName: develop
@@ -68,3 +59,12 @@ minio:
   accessKey: BKnj3kUhjQavfOw9BAjE
   # Secret
   secretKey: 05pyqQm56QL4T6OJMMno80F7Ntir7ffiXT8xejAu
+app:
+  # 默认用户注册角色ID
+  default-role-id: 0
+  # 文件存储位置
+  data-save-path: C:/Pan
+  # 缓冲区大小
+  buffer-size: 8192
+  # 客户端根目录
+  client-baseurl: http://127.0.0.1:8080
