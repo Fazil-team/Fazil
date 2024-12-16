@@ -1,7 +1,7 @@
 package cn.mrcsh.zfcloudpanbackend.enums;
 
 public enum ErrorCode {
-    NO_LOGIN(2"未登陆"),
+    NO_LOGIN(2,"未登陆"),
     NO_PERMISSION(3,"无此权限"),
     RUNTIME_EXCE(1, "系统异常")
 
