@@ -7,4 +7,5 @@ public class ShareVo {
     private String shareUsername;
     private String shareTime;
     private String shareUserAvatar;
+    private String shareUserId;
 }

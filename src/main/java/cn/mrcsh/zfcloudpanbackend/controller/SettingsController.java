@@ -1,14 +1,25 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
+import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.entity.po.SysSettings;
 import cn.mrcsh.zfcloudpanbackend.service.SysSettingsService;
 import cn.mrcsh.zfcloudpanbackend.utils.MinioUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @RestController
 @RequestMapping("/setting")
@@ -21,6 +32,9 @@ public class SettingsController extends BaseController {
     private SysSettingsService service;
     @Autowired
     private MinioUtils minioUtils;
+
+    @Autowired
+    private APPConfig config;
 
     @PutMapping
     public response saveSetting(@RequestBody SysSettings setting) {
@@ -35,29 +49,56 @@ public class SettingsController extends BaseController {
     }
 
     @PostMapping("/upload/{action}")
-    public response upload(@RequestParam("file") MultipartFile file, @PathVariable Integer action) {
-        String upload = minioUtils.upload(file);
+    public response upload(@RequestParam("file") MultipartFile file, @PathVariable Integer action) throws IOException {
+        String upload = "";
+//        minioUtils.upload(file);
         log.info("文件名:{}, URL: {}, 后缀: {}",file.getOriginalFilename(),upload, FileUtil.getSuffix(file.getOriginalFilename()));
         SysSettings sysSettings = service.getSysSettings();
+        File sys_img_folder = new File(config.getDataSavePath()+"/static/sys_img");
+        if(!sys_img_folder.exists()){
+            sys_img_folder.mkdirs();
+        }
         switch (action){
+            // 登录背景
             case 1->{
-                sysSettings.setLoginBgImg(upload);
+                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "bg."+FileUtil.getSuffix(file.getOriginalFilename()));
+                file.transferTo(imgFile);
+                sysSettings.setLoginBgImg(imgFile.getAbsolutePath());
             }
+            // 整体logo
             case 2->{
-                sysSettings.setLogo(upload);
+                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "full_logo."+FileUtil.getSuffix(file.getOriginalFilename()));
+                file.transferTo(imgFile);
+                sysSettings.setLogo(imgFile.getAbsolutePath());
             }
+            // 小图标
             case 3->{
-                sysSettings.setLogoSmall(upload);
+                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "icon."+FileUtil.getSuffix(file.getOriginalFilename()));
+                file.transferTo(imgFile);
+                sysSettings.setLogoSmall(imgFile.getAbsolutePath());
             }
+            // 黑色文字logo
             case 4->{
-                sysSettings.setLogoTextBlack(upload);
+                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "logo_b."+FileUtil.getSuffix(file.getOriginalFilename()));
+                file.transferTo(imgFile);
+                sysSettings.setLogoTextBlack(imgFile.getAbsolutePath());
             }
+            // 白色文字logo
             case 5->{
-                sysSettings.setLogoTextWhite(upload);
+                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "logo_w."+FileUtil.getSuffix(file.getOriginalFilename()));
+                file.transferTo(imgFile);
+                sysSettings.setLogoTextWhite(imgFile.getAbsolutePath());
             }
             default -> {return error("不支持的操作");}
         }
         service.update(sysSettings);
         return success(upload);
+    }
+
+    @GetMapping("/version")
+    public response version() throws IOException {
+        ClassPathResource classPathResource = new ClassPathResource("version" );
+        String s = FileUtil.readString(classPathResource.getURL(), StandardCharsets.UTF_8).replaceAll("\r\n", "");
+        return success(s);
     }
 }

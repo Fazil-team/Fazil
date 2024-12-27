@@ -1,23 +1,28 @@
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 200MB
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
-    url: jdbc:mysql://127.0.0.1:3306/fazil_db?timeZone=Asia/Shanghai
+    password: Cuishihao123
+    url: jdbc:mysql://host.mrcsh.cn:3306/zfcloudpandb?timeZone=Asia/Shanghai
     # redis配置
   data:
     redis:
       # Redis数据库索引（默认为0）
       database: 0
       # Redis服务器地址
-      host: 127.0.0.1
+      host: host.mrcsh.cn
       # Redis服务器连接端口
       port: 6379
       # Redis服务器连接密码（默认为空）
-      password:
+      password: Cuishihao123
       # 连接超时时间
       timeout: 10s
       lettuce:
@@ -63,8 +68,8 @@ app:
   # 默认用户注册角色ID
   default-role-id: 0
   # 文件存储位置
-  data-save-path: C:/Pan
+  data-save-path: /opt/server/data
   # 缓冲区大小
   buffer-size: 8192
   # 客户端根目录
-  client-baseurl: http://127.0.0.1:3000
+  client-baseurl: pan.mrcsh.cn

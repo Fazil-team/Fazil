@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
+import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.UserStorageVo;
@@ -11,9 +12,17 @@ import cn.mrcsh.zfcloudpanbackend.enums.WSType;
 import cn.mrcsh.zfcloudpanbackend.manager.WSManager;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/user")
@@ -24,6 +33,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private APPConfig appConfig;
 
     @GetMapping
     @AccessLog()
@@ -78,5 +90,11 @@ public class UserController extends BaseController {
     public response getStorage() {
         UserStorageVo storageVo = userService.getUserStorage();
         return success(storageVo);
+    }
+
+    @PostMapping("/change_user_avatar")
+    public response setUserAvatar(MultipartFile file){
+        userService.changeAvarar(file);
+        return success();
     }
 }

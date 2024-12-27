@@ -105,7 +105,7 @@ public class FileController extends BaseController {
     @PostMapping("/share")
     @SaCheckLogin
     @AccessLog()
-    public response share(@RequestBody Share share){
+    public response share(@RequestBody Share share, Integer page_size, Integer current_page){
        Share res = fileService.shareFile(share);
        return success(res);
     }
@@ -130,5 +130,11 @@ public class FileController extends BaseController {
     public response getAllShares(){
         List<ShareCVo> shares = fileService.shares();
         return success(shares);
+    }
+
+    @DeleteMapping("/shares/{share_id}")
+    public response deleteShare(@PathVariable String share_id){
+        fileService.removeShare(share_id);
+        return success();
     }
 }

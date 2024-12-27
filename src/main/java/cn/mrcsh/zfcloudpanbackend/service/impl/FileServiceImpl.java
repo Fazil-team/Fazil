@@ -29,6 +29,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -143,6 +145,7 @@ public class FileServiceImpl implements FileService {
             FileInfo fileInfo = mapper.selectById(fileId);
             // 下载
             File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
+            response.setHeader("Content-Disposition", "attachment; fileName=" + URLEncoder.encode(fileInfo.getFileName(), StandardCharsets.UTF_8));
             response.setContentLengthLong(file.length());
             FileInputStream fis = new FileInputStream(file);
             byte[] buffer = new byte[config.getBufferSize()];
@@ -245,7 +248,7 @@ public class FileServiceImpl implements FileService {
         if (share.getSharePwd() == null || share.getSharePwd().isEmpty()) {
             share.setSharePwd(RandomUtil.randomNumbers(6));
         }
-        share.setShareUrl(config.getClientBaseURL() + "/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
+        share.setShareUrl(config.getClientBaseURL() + "/#/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
         shareMapper.insert(share);
         return share;
     }
@@ -274,6 +277,7 @@ public class FileServiceImpl implements FileService {
         shareVo.setShareTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(share.getCreateTime()));
         shareVo.setShareUsername(user.getUserName());
         shareVo.setShareUserAvatar(user.getAvatar());
+        shareVo.setShareUserId(user.getId());
         return shareVo;
     }
 
@@ -290,5 +294,10 @@ public class FileServiceImpl implements FileService {
             res.add(shareCVo);
         });
         return res;
+    }
+
+    @Override
+    public void removeShare(String shareId) {
+        shareMapper.deleteById(shareId);
     }
 }

@@ -39,4 +39,6 @@ public interface FileService {
     ShareVo getShareUserInfo(String shareId);
 
     List<ShareCVo> shares();
+
+    void removeShare(String shareId);
 }

@@ -15,8 +15,8 @@ public class ABaseExceptionHandler extends BaseController {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public response error(Exception e, HttpServerResponse response){
-        e.printStackTrace();
+    public response exceptionHandler(Exception e){
+//        e.printStackTrace();
         if (e instanceof NotLoginException) {
             return error(ErrorCode.NO_LOGIN);
         } else if (e instanceof NullPointerException) {

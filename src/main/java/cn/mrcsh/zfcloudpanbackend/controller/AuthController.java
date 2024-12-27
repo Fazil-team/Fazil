@@ -54,6 +54,7 @@ public class AuthController extends BaseController {
             userVo.setMenus(menuService.getMenuListByRoleId(user.getRole(), sys));
             userVo.setAvatar(user.getAvatar());
             userVo.setLastLoginTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            userVo.setId(user.getId());
             return success(userVo);
         }
         return error("密码错误");
