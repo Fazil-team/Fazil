@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: hos
+    active: dev
   servlet:
     multipart:
       enabled: true
