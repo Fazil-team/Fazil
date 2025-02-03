@@ -6,14 +6,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: Cuishihao123
-    url: jdbc:mysql://192.168.100.114:3306/zfpandb?timeZone=Asia/Shanghai
+    url: jdbc:mysql://mrcsh.cn:3306/zfcloudpandb?timeZone=Asia/Shanghai
     # redis配置
   data:
     redis:
       # Redis数据库索引（默认为0）
       database: 0
       # Redis服务器地址
-      host: 192.168.100.114
+      host: mrcsh.cn
       # Redis服务器连接端口
       port: 6379
       # Redis服务器连接密码（默认为空）
@@ -39,9 +39,11 @@ app:
   # 默认用户注册角色ID
   default-role-id: 0
   # 文件存储位置
-  data-save-path: /Users/qifei/Documents/pan
+  data-save-path: C:/Pan
   # 缓冲区大小
   buffer-size: 8192
+  # 客户端根目录
+  client-baseurl: http://127.0.0.1:3000
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
   # token 名称（同时也是 cookie 名称）

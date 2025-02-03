@@ -24,8 +24,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class FileServiceImpl implements FileService {
 
     @Value("${sa-token.token-name}")
@@ -151,14 +154,19 @@ public class FileServiceImpl implements FileService {
             byte[] buffer = new byte[config.getBufferSize()];
             int bytesRead;
             while ((bytesRead = fis.read(buffer)) != -1) {
-                response.getOutputStream().write(buffer, 0, bytesRead);
+                try {
+                    response.getOutputStream().write(buffer, 0, bytesRead);
+                    Thread.sleep(10);
+                }catch (Exception e){
+                    log.error("使用IDM下载器下载");
+                }
             }
             response.getOutputStream().flush();
             response.getOutputStream().close();
             fis.close();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new NullPointerException("文件不存在");
+//            throw new NullPointerException("文件不存在");
         }
     }
 
