@@ -2,7 +2,7 @@ package cn.mrcsh.zfcloudpanbackend.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
+
 import cn.mrcsh.zfcloudpanbackend.entity.po.Menu;
 import cn.mrcsh.zfcloudpanbackend.service.MenuService;
 import cn.mrcsh.zfcloudpanbackend.utils.TreeUtils;
@@ -22,7 +22,7 @@ public class MenuController extends BaseController {
     private MenuService menuService;
 
     @GetMapping
-    @AccessLog()
+    
     @SaCheckLogin
     @SaCheckPermission("sys:menu:select")
     public response getMenus(){
@@ -32,7 +32,7 @@ public class MenuController extends BaseController {
     }
 
     @PostMapping
-    @AccessLog()
+    
     @SaCheckLogin
     @SaCheckPermission("sys:menu:new")
     public response addMenu(@RequestBody Menu menu){
@@ -42,7 +42,7 @@ public class MenuController extends BaseController {
     }
 
     @PutMapping
-    @AccessLog()
+    
     @SaCheckLogin
     @SaCheckPermission("sys:menu:update")
     public response updateMenu(@RequestBody Menu menu){
@@ -51,7 +51,7 @@ public class MenuController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
-    @AccessLog()
+    
     @SaCheckLogin
     @SaCheckPermission("sys:menu:remove")
     public response deleteMenu(@PathVariable Integer id){

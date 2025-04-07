@@ -15,4 +15,12 @@ public class APPConfig {
     private Integer bufferSize;
     @Value("${app.client-baseurl}")
     private String clientBaseURL;
+    @Value("${app.init-user-size}")
+    private Long initUserSize;
+    @Value("${app.sms.mail.account}")
+    private String mailAccount;
+    @Value("${app.sms.mail.password}")
+    private String mailPassword;
+    @Value("${app.ffmpeg.enable}")
+    private boolean enableFfmpeg;
 }

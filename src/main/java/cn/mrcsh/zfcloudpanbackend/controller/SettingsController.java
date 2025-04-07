@@ -3,6 +3,7 @@ package cn.mrcsh.zfcloudpanbackend.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
+import cn.mrcsh.zfcloudpanbackend.config.Temp;
 import cn.mrcsh.zfcloudpanbackend.entity.po.SysSettings;
 import cn.mrcsh.zfcloudpanbackend.service.SysSettingsService;
 import cn.mrcsh.zfcloudpanbackend.utils.MinioUtils;
@@ -45,6 +46,7 @@ public class SettingsController extends BaseController {
     @GetMapping
     public response settings(){
         SysSettings sysSettings = service.getSysSettings();
+        sysSettings.setRegister(Temp.isAutoCheck);
         return success(sysSettings);
     }
 

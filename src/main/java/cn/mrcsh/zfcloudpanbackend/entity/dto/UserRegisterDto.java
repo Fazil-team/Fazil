@@ -10,4 +10,6 @@ public class UserRegisterDto {
     private String password;
     private String email;
     private Integer role;
+    private String checkCode;
+    private String seqId;
 }

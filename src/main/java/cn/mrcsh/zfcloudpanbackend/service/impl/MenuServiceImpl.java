@@ -7,23 +7,19 @@ import cn.mrcsh.zfcloudpanbackend.mapper.RoleMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
 import cn.mrcsh.zfcloudpanbackend.service.MenuService;
 import cn.mrcsh.zfcloudpanbackend.service.RoleService;
-import cn.mrcsh.zfcloudpanbackend.service.UserService;
 import cn.mrcsh.zfcloudpanbackend.utils.TreeUtils;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
-import org.springframework.util.RouteMatcher;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Service
+@DependsOn("databaseInitialize")
 public class MenuServiceImpl implements MenuService {
 
     @Autowired

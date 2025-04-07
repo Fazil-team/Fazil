@@ -20,7 +20,8 @@ public class ABaseExceptionHandler extends BaseController {
         if (e instanceof NotLoginException) {
             return error(ErrorCode.NO_LOGIN);
         } else if (e instanceof NullPointerException) {
-            return error(ErrorCode.RUNTIME_EXCE);
+            e.printStackTrace();
+            return error(e.getMessage());
         }else if(e instanceof NotPermissionException){
             return error(ErrorCode.NO_PERMISSION);
         }else {

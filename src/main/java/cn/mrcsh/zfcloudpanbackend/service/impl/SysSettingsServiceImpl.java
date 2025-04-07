@@ -8,6 +8,7 @@ import cn.mrcsh.zfcloudpanbackend.utils.RedisUtil;
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -24,6 +25,9 @@ public class SysSettingsServiceImpl implements SysSettingsService {
     @Autowired
     private FileUtils fileUtils;
 
+    @Value("${app.icp}")
+    private String icp;
+
     @Override
     public void update(SysSettings sysSettings) {
         sysSettings.setId(0);
@@ -33,7 +37,9 @@ public class SysSettingsServiceImpl implements SysSettingsService {
 
     @Override
     public SysSettings getSysSettings() {
-        return sysSettingsMapper.selectById(0);
+        SysSettings sysSettings = sysSettingsMapper.selectById(0);
+        sysSettings.setICP(icp);
+        return sysSettings;
     }
 
     @Override

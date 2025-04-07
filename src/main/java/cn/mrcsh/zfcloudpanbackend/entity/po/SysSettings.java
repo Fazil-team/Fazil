@@ -1,5 +1,6 @@
 package cn.mrcsh.zfcloudpanbackend.entity.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -13,4 +14,8 @@ public class SysSettings {
     private String logo;
     private String logoTextBlack;
     private String logoTextWhite;
+    @TableField(exist = false)
+    private String ICP;
+    @TableField(exist = false)
+    private boolean isRegister;
 }

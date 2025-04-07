@@ -7,7 +7,7 @@ import lombok.Data;
 public class BaseController {
     @Data
     @AllArgsConstructor
-    class response {
+    public static class response {
         private Integer code;
         private String msg;
         private Object data;

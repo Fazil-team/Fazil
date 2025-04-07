@@ -14,6 +14,7 @@
     <groupId>cn.mrcsh</groupId>
     <artifactId>ZFCloudPanBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>ZFCloudPanBackend</name>
     <description>ZFCloudPanBackend</description>
     <properties>
@@ -113,11 +114,22 @@
             <version>2.16.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
+            <version>1.2.20</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
 
     </dependencies>
 
     <build>
-        <finalName>ZhiFeiPanAdminApp</finalName>
+        <finalName>app</finalName>
         <plugins>
             <!-- 1、编译出不带 lib 文件夹的Jar包 -->
             <plugin>
@@ -208,6 +220,7 @@
                         <exclude>*.properties</exclude>
                         <exclude>*.xml</exclude>
                         <exclude>*.yml</exclude>
+                        <exclude>*.setting</exclude>
                     </excludes>
                 </configuration>
             </plugin>

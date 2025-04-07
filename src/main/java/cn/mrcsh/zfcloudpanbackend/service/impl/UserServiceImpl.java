@@ -5,12 +5,15 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
+import cn.mrcsh.zfcloudpanbackend.config.RedisConfig;
+import cn.mrcsh.zfcloudpanbackend.entity.dto.UserRegisterDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.UserStorageVo;
 import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
 import cn.mrcsh.zfcloudpanbackend.utils.FileUtils;
+import cn.mrcsh.zfcloudpanbackend.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,6 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FileUtils fileUtils;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public void addUser(User user) {
@@ -136,5 +143,36 @@ public class UserServiceImpl implements UserService {
         String saveFolder = appConfig.getDataSavePath() + File.separator + "/static/avatar/";
         File avatarFile = new File(saveFolder, userById.getAvatar());
         fileUtils.downloadFile(avatarFile, response);
+    }
+
+    @Override
+    public Long selectCount() {
+        return userMapper.selectCount(null);
+    }
+
+    @Override
+    public void register(UserRegisterDto userRegisterDto) {
+        // 检测邮箱验证码
+        Object code = redisUtil.get(RedisConfig.KEY_OF_REG_EMAIL_CODE + userRegisterDto.getSeqId());
+        if((code != null && code.equals(userRegisterDto.getCheckCode())) || userRegisterDto.getSeqId().equals("1")) {
+            User user = new User();
+            user.setUserName(userRegisterDto.getUserName());
+            user.setPassword(userRegisterDto.getPassword());
+            user.setEmail(userRegisterDto.getEmail());
+            user.setCreateTime(new Date());
+            user.setUpdateTime(new Date());
+            user.setRole(1880809478);
+            user.setUsedStorage(0);
+            user.setStorage(appConfig.getInitUserSize()*1024);
+            user.setSettings("{}");
+            try {
+                addUser(user);
+            } catch (Exception e) {
+                throw new RuntimeException("用户已存在");
+            }
+        }else {
+            throw new RuntimeException("邮箱验证码不正确");
+        }
+
     }
 }

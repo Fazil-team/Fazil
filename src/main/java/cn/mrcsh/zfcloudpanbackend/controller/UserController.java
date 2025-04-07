@@ -3,7 +3,7 @@ package cn.mrcsh.zfcloudpanbackend.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
+
 import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
@@ -38,7 +38,7 @@ public class UserController extends BaseController {
     private APPConfig appConfig;
 
     @GetMapping
-    @AccessLog()
+    
     @SaCheckLogin
     @SaCheckPermission("sys:user:select")
     public response getAllUsers(Integer page_size, Integer current_page, String username){
@@ -50,7 +50,6 @@ public class UserController extends BaseController {
     }
 
     @DeleteMapping("/{user_id}")
-    @AccessLog
     @SaCheckLogin
     @SaCheckPermission("sys:user:remove")
     public response deleteUser(@PathVariable String user_id){
@@ -62,7 +61,6 @@ public class UserController extends BaseController {
     }
 
     @PostMapping
-    @AccessLog
     @SaCheckLogin
     @SaCheckPermission("sys:user:new")
     public response addUser(@RequestBody User user){
@@ -71,7 +69,7 @@ public class UserController extends BaseController {
     }
 
     @PutMapping
-    @AccessLog
+    
     @SaCheckLogin
     @SaCheckPermission("sys:user:update")
     public response changeUser(@RequestBody User user){

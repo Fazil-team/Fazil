@@ -2,7 +2,7 @@ package cn.mrcsh.zfcloudpanbackend.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.util.IdUtil;
-import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
+
 import cn.mrcsh.zfcloudpanbackend.annotation.Lock;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.UploadFileDto;
@@ -45,13 +45,11 @@ public class FileController extends BaseController {
 
 
     @PostMapping
-    @AccessLog()
     @SaCheckLogin
     public response upload_file(UploadFileDto uploadFileDto) throws InterruptedException, IOException {
         // 检查空间是否足够
         if (fileService.can_upload(uploadFileDto.getFile_size())) {
             String s = handler.chunk_upload(uploadFileDto);
-            System.out.println(s);
             return success(s);
         }
         return error("空间不足");
@@ -59,7 +57,6 @@ public class FileController extends BaseController {
 
     @PostMapping("/folder")
     @SaCheckLogin
-    @AccessLog()
     public response newFolder(@RequestBody FolderDto folderDto){
         fileService.createFolder(folderDto);
         return success();
@@ -67,7 +64,6 @@ public class FileController extends BaseController {
 
     @GetMapping
     @SaCheckLogin
-    @AccessLog()
     public response getFiles(HttpServletRequest request, String path, Integer page_size, Integer current_page) {
         PageStructure<FileInfo> page = fileService.getFileList(request, path,page_size,current_page);
         return success(page);
@@ -75,28 +71,34 @@ public class FileController extends BaseController {
 
     @DeleteMapping
     @SaCheckLogin
-    @AccessLog()
     public response deleteFile(String file_id){
         fileService.removeFile(file_id);
         return success();
     }
 
     @GetMapping("/download_file")
-    @AccessLog()
     public void download_file(HttpServletRequest request, HttpServletResponse response, String file_id) throws IOException {
         fileService.download(request, response, file_id);
     }
 
-    @GetMapping("/perview/{accessKey}")
-    @SaCheckLogin
-    @AccessLog()
+//    @GetMapping("/perview/{accessKey}")
+//    @SaCheckLogin
     public void preview(HttpServletResponse response,@PathVariable String accessKey){
         fileService.previewFile(accessKey, response);
     }
 
+    @GetMapping("/video/preview/{id}/{tsName}")
+    public void previewVideo(HttpServletResponse response, @PathVariable String id, @PathVariable String tsName){
+        fileService.previewVideo(response, id, tsName);
+    }
+
+    @GetMapping("/video/avatar/{id}")
+    public void previewVideoAvatar(HttpServletResponse response, @PathVariable String id){
+        fileService.previewVideoAvatar(response, id);
+    }
+
     @GetMapping("/gen_key")
     @SaCheckLogin
-    @AccessLog()
     public response gen_key(String file_id){
         String key = fileService.genAccessKey(file_id);
         return success(key);
@@ -104,21 +106,18 @@ public class FileController extends BaseController {
 
     @PostMapping("/share")
     @SaCheckLogin
-    @AccessLog()
     public response share(@RequestBody Share share, Integer page_size, Integer current_page){
        Share res = fileService.shareFile(share);
        return success(res);
     }
 
     @GetMapping("/check_share_code")
-    @AccessLog()
     public response checkShareCode(String share_code, String share_id){
         FileInfo fileInfo = fileService.checkShareCodes(share_code, share_id);
         return success(fileInfo);
     }
 
     @GetMapping("/get_share_user_info")
-    @AccessLog()
     public response getShareUserInfo(String share_id){
         ShareVo shareVo = fileService.getShareUserInfo(share_id);
         return success(shareVo);
@@ -126,15 +125,28 @@ public class FileController extends BaseController {
 
     @GetMapping("/shares")
     @SaCheckLogin
-    @AccessLog()
     public response getAllShares(){
         List<ShareCVo> shares = fileService.shares();
         return success(shares);
     }
-
     @DeleteMapping("/shares/{share_id}")
+    @SaCheckLogin
     public response deleteShare(@PathVariable String share_id){
         fileService.removeShare(share_id);
+        return success();
+    }
+
+    @GetMapping("/last_file")
+    @SaCheckLogin
+    public response getLastFile(){
+        List<FileInfo> files = fileService.getLastFile();
+        return success(files);
+    }
+
+    @PostMapping("/rename_file")
+    @SaCheckLogin
+    public response remaneFile(@RequestBody FileInfo fileInfo){
+        fileService.reNameFile(fileInfo);
         return success();
     }
 }

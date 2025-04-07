@@ -23,8 +23,8 @@ cp C:\Code\Project\ZFCloudPan\FazilBackend\src\main\resources\application-docker
 
 cd C:\Code\Project\ZFCloudPan\FazilBackend\
 echo "build docker image"
-docker build -t nexus-docker.dazhoutp.cn:8088/fazil:$dockerTag .
+docker build -t nexus-docker.mrcsh.cn/fazil:$dockerTag .
 echo "login docker"
-docker login http://nexus-docker.dazhoutp.cn:8088 -u admin -p Cuishihao123
+docker login nexus-docker.mrcsh.cn -u admin -p Cuishihao123
 echo "push docker image"
-docker push nexus-docker.dazhoutp.cn:8088/fazil:$dockerTag
+docker push nexus-docker.mrcsh.cn/fazil:$dockerTag

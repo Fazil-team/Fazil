@@ -20,4 +20,7 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(stringRedisSerializer);
         return redisTemplate;
     }
+
+    public static final String KEY_OF_REG_EMAIL_CODE = "pan:email:code:";
+    public static final String KEY_OF_REG_EMAIL_LOCK = "pan:email:lock:";
 }

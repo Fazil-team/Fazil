@@ -69,7 +69,7 @@ public class WSManager {
             session.getAsyncRemote().sendText(JSON.toJSONString(xws));
         }catch (Exception e){
             e.printStackTrace();
-            log.error("消息发送失败");
+            log.error("消息发送失败: {}", xws);
         }
     }
 }

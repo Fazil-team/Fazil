@@ -1,13 +1,15 @@
 package cn.mrcsh.zfcloudpanbackend.annotation;
 
+import cn.mrcsh.zfcloudpanbackend.enums.MONITOR_TYPE;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AccessLog {
-    // 功能名称
-    String value() default "";
+@Target(ElementType.METHOD)
+public @interface Monitor {
+    MONITOR_TYPE value() default MONITOR_TYPE.API;
+
 }

@@ -14,17 +14,22 @@ import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareCVo;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareVo;
 import cn.mrcsh.zfcloudpanbackend.enums.ENV;
+import cn.mrcsh.zfcloudpanbackend.enums.FileTypes;
+import cn.mrcsh.zfcloudpanbackend.enums.MONITOR_TYPE;
 import cn.mrcsh.zfcloudpanbackend.mapper.FileInfoMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.ShareMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
 import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
+import cn.mrcsh.zfcloudpanbackend.utils.GraphicUtils;
 import cn.mrcsh.zfcloudpanbackend.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -64,6 +69,9 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private ShareMapper shareMapper;
 
+    @Autowired
+    private GraphicUtils graphicUtils;
+
     @Override
     public synchronized void save(FileInfo fileInfo) throws IOException {
         FileInfo source = mapper.selectById(fileInfo.getFileId());
@@ -80,13 +88,13 @@ public class FileServiceImpl implements FileService {
             User user = userMapper.selectById(loginId);
             user.setUsedStorage(user.getUsedStorage() + fileInfo.getFileSize());
             userMapper.updateById(user);
-            System.out.println("完事儿" + Temp.num + "|" + user.getUsedStorage() + "|" + fileInfo.getFileSize() + "|" + (user.getUsedStorage() + fileInfo.getFileSize()));
         }
         saveFile(fileInfo);
     }
 
     public void saveFile(FileInfo fileInfo) throws IOException {
         File folder = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath() + "temp");
+
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -97,6 +105,9 @@ public class FileServiceImpl implements FileService {
         fileInfo.getFile().transferTo(temp);
         if (fileInfo.getChunkIndex() + 1 == fileInfo.getChunkNum()) {
             transform(fileInfo);
+            if(config.isEnableFfmpeg()){
+                graphicUtils.zipVideo(fileInfo);
+            }
         }
     }
 
@@ -121,6 +132,7 @@ public class FileServiceImpl implements FileService {
             }
             inputStream.close();
         }
+        outputStream.flush();
         outputStream.close();
         FileUtil.del(tempFolder);
     }
@@ -148,17 +160,19 @@ public class FileServiceImpl implements FileService {
             FileInfo fileInfo = mapper.selectById(fileId);
             // 下载
             File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
-            response.setHeader("Content-Disposition", "attachment; fileName=" + URLEncoder.encode(fileInfo.getFileName(), StandardCharsets.UTF_8));
+            response.setHeader("Content-Disposition", "inline;fileName=" + URLEncoder.encode(fileInfo.getFileName(), StandardCharsets.UTF_8));
             response.setContentLengthLong(file.length());
             FileInputStream fis = new FileInputStream(file);
-            byte[] buffer = new byte[config.getBufferSize()];
+            byte[] buffer = new byte[config.getBufferSize() * 1024 * 1024];
             int bytesRead;
             while ((bytesRead = fis.read(buffer)) != -1) {
                 try {
                     response.getOutputStream().write(buffer, 0, bytesRead);
+                    Temp.MonitorCache.put(MONITOR_TYPE.NETWORK.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.NETWORK.getType(), 0L) + bytesRead);
+                    log.info("vals: {}", Temp.MonitorCache.get(MONITOR_TYPE.NETWORK.getType()));
                     Thread.sleep(10);
-                }catch (Exception e){
-                    log.error("使用IDM下载器下载");
+                } catch (Exception e) {
+                    log.error("Range协议暂未支持");
                 }
             }
             response.getOutputStream().flush();
@@ -224,19 +238,24 @@ public class FileServiceImpl implements FileService {
             }
             String fileId = (String) o;
             FileInfo fileInfo = mapper.selectById(fileId);
+            if(fileInfo.getFileType().equals(FileTypes.MEDIA.getType())){
+                fileInfo.setFileAbsPath("video/index.m3u8");
+            }
             // 下载
             File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
             response.setContentLengthLong(file.length());
             FileInputStream fis = new FileInputStream(file);
-            byte[] buffer = new byte[config.getBufferSize()];
+            byte[] buffer = new byte[config.getBufferSize() * 1024 * 1024];
             int bytesRead;
             while ((bytesRead = fis.read(buffer)) != -1) {
                 response.getOutputStream().write(buffer, 0, bytesRead);
+                Temp.MonitorCache.put(MONITOR_TYPE.NETWORK.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.NETWORK.getType(), 0L) + bytesRead);
             }
             response.getOutputStream().flush();
             response.getOutputStream().close();
             fis.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -256,7 +275,7 @@ public class FileServiceImpl implements FileService {
         if (share.getSharePwd() == null || share.getSharePwd().isEmpty()) {
             share.setSharePwd(RandomUtil.randomNumbers(6));
         }
-        share.setShareUrl(config.getClientBaseURL() + "/#/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
+        share.setShareUrl(config.getClientBaseURL() + "/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
         shareMapper.insert(share);
         return share;
     }
@@ -273,6 +292,10 @@ public class FileServiceImpl implements FileService {
 
         if (!shareCode.equals(share.getSharePwd())) {
             return null;
+        }
+
+        if(share.getShareExpireTime() != null && share.getShareExpireTime().before(new Date())){
+            throw new NullPointerException("分享链接已过期");
         }
         return mapper.selectById(share.getShareFileId());
     }
@@ -307,5 +330,63 @@ public class FileServiceImpl implements FileService {
     @Override
     public void removeShare(String shareId) {
         shareMapper.deleteById(shareId);
+    }
+
+    @Override
+    public void previewVideo(HttpServletResponse response, String id, String tsName) {
+        try {
+            FileInfo fileInfo = mapper.selectById(id);
+            if(fileInfo.getFileType().equals(FileTypes.MEDIA.getType())){
+                fileInfo.setFileAbsPath("video/"+id+"/"+tsName);
+            }
+            // 下载
+            File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
+            uploadFile(file, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void previewVideoAvatar(HttpServletResponse response, String id) {
+        FileInfo fileInfo = mapper.selectById(id);
+        File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAvatar());
+        uploadFile(file, response);
+    }
+
+    @Override
+    public List<FileInfo> getLastFile() {
+        String userId = (String) StpUtil.getLoginId();
+        QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .eq("file_owner", userId)
+                .eq("status", "completed")
+                .orderByDesc("update_time")
+        ;
+        return mapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public void reNameFile(FileInfo fileInfo) {
+        // 通过ID查询文件并修改名称
+        FileInfo sourceData = mapper.selectById(fileInfo.getFileId());
+        sourceData.setFileName(fileInfo.getFileName());
+        sourceData.setUpdateTime(new Date());
+        mapper.updateById(sourceData);
+    }
+
+    @SneakyThrows
+    public void uploadFile(File file, HttpServletResponse response) {
+        response.setContentLengthLong(file.length());
+        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[config.getBufferSize() * 1024 * 1024];
+        int bytesRead;
+        while ((bytesRead = fis.read(buffer)) != -1) {
+            response.getOutputStream().write(buffer, 0, bytesRead);
+            Temp.MonitorCache.put(MONITOR_TYPE.NETWORK.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.NETWORK.getType(), 0L) + bytesRead);
+        }
+        response.getOutputStream().flush();
+        response.getOutputStream().close();
+        fis.close();
     }
 }

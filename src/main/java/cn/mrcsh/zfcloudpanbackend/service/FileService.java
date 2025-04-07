@@ -41,4 +41,12 @@ public interface FileService {
     List<ShareCVo> shares();
 
     void removeShare(String shareId);
+
+    void previewVideo(HttpServletResponse response, String id, String tsName);
+
+    void previewVideoAvatar(HttpServletResponse response, String id);
+
+    List<FileInfo> getLastFile();
+
+    void reNameFile(FileInfo fileInfo);
 }

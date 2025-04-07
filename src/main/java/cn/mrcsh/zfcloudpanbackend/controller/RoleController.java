@@ -2,7 +2,7 @@ package cn.mrcsh.zfcloudpanbackend.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
+
 import cn.mrcsh.zfcloudpanbackend.entity.po.Role;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import cn.mrcsh.zfcloudpanbackend.service.RoleService;
@@ -22,7 +22,7 @@ public class RoleController extends BaseController {
     private RoleService roleService;
 
     @GetMapping
-    @AccessLog
+    
     @SaCheckLogin
     @SaCheckPermission("sys:role:select")
     public response allRoles(Integer page_size, Integer current_page){
@@ -30,7 +30,7 @@ public class RoleController extends BaseController {
         return success(roles);
     }
 
-    @AccessLog
+    
     @PostMapping
     @SaCheckLogin
     @SaCheckPermission("sys:role:new")
@@ -39,7 +39,7 @@ public class RoleController extends BaseController {
         return success();
     }
 
-    @AccessLog
+    
     @DeleteMapping("/{id}")
     @SaCheckLogin
     @SaCheckPermission("sys:role:remove")
@@ -48,7 +48,7 @@ public class RoleController extends BaseController {
         return success();
     }
 
-    @AccessLog
+    
     @PutMapping
     @SaCheckLogin
     @SaCheckPermission("sys:role:update")

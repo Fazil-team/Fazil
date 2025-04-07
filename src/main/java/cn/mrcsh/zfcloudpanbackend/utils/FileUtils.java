@@ -30,7 +30,7 @@ public class FileUtils {
             response.getOutputStream().close();
             fis.close();
         }catch (Exception e) {
-            log.error("[FileDownloader] 文件: {} 下载失败", file.getName(), e);
+            log.error("[FileDownloader] 文件: {} 下载失败", file.getName());
         }
 
     }

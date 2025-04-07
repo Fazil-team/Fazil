@@ -1,8 +1,9 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import cn.mrcsh.zfcloudpanbackend.annotation.AccessLog;
+
 import cn.mrcsh.zfcloudpanbackend.entity.dto.UserLoginDto;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.UserRegisterDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.NullableUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -34,7 +36,7 @@ public class AuthController extends BaseController {
 
 
     @PostMapping("/login/{sys}")
-    @AccessLog()
+    
     @ApiResponses
     @Operation(summary = "登录")
     public response login(@RequestBody UserLoginDto userLoginDto, @PathVariable String sys) {
@@ -68,22 +70,23 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/register")
-    @AccessLog()
     @Operation(summary = "注册")
     public response register(@RequestBody UserRegisterDto userRegisterDto) {
-        User user = new User();
-        user.setUserName(userRegisterDto.getUserName());
-        user.setPassword(userRegisterDto.getPassword());
-        user.setEmail(userRegisterDto.getEmail());
-        user.setCreateTime(new Date());
-        user.setUpdateTime(new Date());
-        user.setRole(userRegisterDto.getRole());
-        user.setSettings("{}");
-        try {
-            userService.addUser(user);
-        } catch (Exception e) {
-            return error("用户已存在");
+        if(StrUtil.isBlank(userRegisterDto.getUserName()) || StrUtil.isBlank(userRegisterDto.getPassword()) || StrUtil.isBlank(userRegisterDto.getCheckCode())){
+            return error("表单未填写完整");
         }
+
+        if(StrUtil.isBlank(userRegisterDto.getSeqId())){
+            return error("请刷新页面重新获取验证码");
+        }
+        userService.register(userRegisterDto);
+        return success();
+    }
+
+    @PostMapping("/new_user")
+    public response newUser(@RequestBody UserRegisterDto userRegisterDto) {
+        userRegisterDto.setSeqId("1");
+        userService.register(userRegisterDto);
         return success();
     }
 }

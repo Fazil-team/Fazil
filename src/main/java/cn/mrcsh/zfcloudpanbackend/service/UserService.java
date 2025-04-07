@@ -1,5 +1,6 @@
 package cn.mrcsh.zfcloudpanbackend.service;
 
+import cn.mrcsh.zfcloudpanbackend.entity.dto.UserRegisterDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.UserStorageVo;
@@ -23,4 +24,7 @@ public interface UserService {
 
     void getUserAvatar(HttpServletResponse response, String userId);
 
+    Long selectCount();
+
+    void register(UserRegisterDto userRegisterDto);
 }
