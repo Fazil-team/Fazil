@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
             user.setUpdateTime(new Date());
             user.setRole(1880809478);
             user.setUsedStorage(0);
-            user.setStorage(appConfig.getInitUserSize()*1024);
+            user.setStorage(appConfig.getInitUserSize()*1024*1024*1024);
             user.setSettings("{}");
             try {
                 addUser(user);

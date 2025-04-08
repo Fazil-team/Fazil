@@ -131,8 +131,8 @@ app:
   client-baseurl: http://127.0.0.1:3000
   # ICP备案码
   icp: 京ICP备2025103455号
-  # 注册用户默认存储空间
-  init-user-size: 1024
+  # 注册用户默认存储空间(GB)
+  init-user-size: 10
   # ffmpeg配置
   ffmpeg:
     # 是否开启转码

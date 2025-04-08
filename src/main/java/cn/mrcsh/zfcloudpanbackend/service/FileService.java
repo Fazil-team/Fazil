@@ -18,7 +18,7 @@ public interface FileService {
 
     void transform(FileInfo fileInfo) throws IOException;
 
-    PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page);
+    PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort);
 
     void download(HttpServletRequest request, HttpServletResponse response, String fileId);
 

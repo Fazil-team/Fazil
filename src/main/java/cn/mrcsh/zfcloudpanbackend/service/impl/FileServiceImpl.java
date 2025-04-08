@@ -138,13 +138,14 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page) {
+    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort) {
         String userId = (String) StpUtil.getLoginId();
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .eq("file_path", path)
                 .eq("file_owner", userId)
                 .eq("status", "completed")
+                .orderBy(true, sort.equals("ascend"), "create_time")
         ;
         Page<FileInfo> page = new Page<>(current_page, page_size);
         mapper.selectPage(page, queryWrapper);
@@ -372,6 +373,9 @@ public class FileServiceImpl implements FileService {
         FileInfo sourceData = mapper.selectById(fileInfo.getFileId());
         sourceData.setFileName(fileInfo.getFileName());
         sourceData.setUpdateTime(new Date());
+        if(!sourceData.getFileType().equals(FileTypes.FOLDER.getType())){
+            sourceData.setFileType(FileTypes.getFileType("."+FileUtil.getSuffix(fileInfo.getFileName())).getType());
+        }
         mapper.updateById(sourceData);
     }
 

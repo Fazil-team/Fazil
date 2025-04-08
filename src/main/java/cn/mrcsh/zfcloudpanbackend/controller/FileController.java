@@ -64,8 +64,8 @@ public class FileController extends BaseController {
 
     @GetMapping
     @SaCheckLogin
-    public response getFiles(HttpServletRequest request, String path, Integer page_size, Integer current_page) {
-        PageStructure<FileInfo> page = fileService.getFileList(request, path,page_size,current_page);
+    public response getFiles(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort) {
+        PageStructure<FileInfo> page = fileService.getFileList(request, path,page_size,current_page,sort);
         return success(page);
     }
 

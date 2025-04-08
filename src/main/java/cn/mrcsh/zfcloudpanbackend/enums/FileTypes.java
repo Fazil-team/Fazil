@@ -14,6 +14,7 @@ public enum FileTypes {
     AUDIO("audio", new String[]{".mp3", ".wav", ".aac", ".flac", ".ogg", ".wma", ".m4a"}),
     DB("db", new String[]{".db", ".sqlite", ".mdb", ".accdb"}),
     _3D("3d", new String[]{".stl", ".obj", ".fbx", ".step", ".iges", ".dwg", ".dxf"}),
+    FOLDER("folder", new String[]{""}),
     UNKNOWN("unknown", new String[]{""}),
     ;
 

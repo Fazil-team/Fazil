@@ -8,12 +8,14 @@ import cn.mrcsh.zfcloudpanbackend.entity.dto.UserLoginDto;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.UserRegisterDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.UserVo;
+import cn.mrcsh.zfcloudpanbackend.mapper.RoleMapper;
 import cn.mrcsh.zfcloudpanbackend.service.MenuService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.NullableUtils;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,9 @@ public class AuthController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoleMapper roleMapper;
 
 
     @PostMapping("/login/{sys}")
@@ -57,6 +62,8 @@ public class AuthController extends BaseController {
             userVo.setAvatar(user.getAvatar());
             userVo.setLastLoginTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             userVo.setId(user.getId());
+            String roleName = roleMapper.selectById(user.getRole()).getRoleName();
+            userVo.setRole(roleName);
             return success(userVo);
         }
         return error("密码错误");

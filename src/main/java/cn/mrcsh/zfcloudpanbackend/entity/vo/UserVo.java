@@ -14,4 +14,5 @@ public class UserVo {
     private String avatar;
     private String lastLoginTime;
     private List<Menu> menus;
+    private String role;
 }
