@@ -18,7 +18,7 @@ public interface FileService {
 
     void transform(FileInfo fileInfo) throws IOException;
 
-    PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort);
+    PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort, String fileName);
 
     void download(HttpServletRequest request, HttpServletResponse response, String fileId);
 
@@ -38,7 +38,7 @@ public interface FileService {
 
     ShareVo getShareUserInfo(String shareId);
 
-    List<ShareCVo> shares();
+    PageStructure<ShareCVo> shares(Integer page_size, Integer current_page, String sort);
 
     void removeShare(String shareId);
 
@@ -49,4 +49,10 @@ public interface FileService {
     List<FileInfo> getLastFile();
 
     void reNameFile(FileInfo fileInfo);
+
+    void moveToRrecovery(String fileId);
+
+    PageStructure<FileInfo> getDeletedFile(Integer pageSize, Integer currentPage, String sort);
+
+    void unMoveToRecovery(String fileId);
 }

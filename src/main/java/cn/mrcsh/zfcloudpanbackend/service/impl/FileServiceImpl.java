@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.*;
 import java.net.URLEncoder;
@@ -105,7 +106,7 @@ public class FileServiceImpl implements FileService {
         fileInfo.getFile().transferTo(temp);
         if (fileInfo.getChunkIndex() + 1 == fileInfo.getChunkNum()) {
             transform(fileInfo);
-            if(config.isEnableFfmpeg()){
+            if (config.isEnableFfmpeg() && fileInfo.getFileType().equals(FileTypes.MEDIA.getType())) {
                 graphicUtils.zipVideo(fileInfo);
             }
         }
@@ -138,15 +139,27 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort) {
+    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort, String fileName) {
         String userId = (String) StpUtil.getLoginId();
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper
-                .eq("file_path", path)
-                .eq("file_owner", userId)
-                .eq("status", "completed")
-                .orderBy(true, sort.equals("ascend"), "create_time")
-        ;
+        if (fileName != null && !fileName.isEmpty()) {
+            queryWrapper
+                    .eq("file_owner", userId)
+                    .eq("status", "completed")
+                    .eq("deleted", false)
+                    .likeRight("file_name", "%" + fileName + "%")
+                    .orderBy(true, sort.equals("ascend"), "create_time")
+            ;
+        } else {
+            queryWrapper
+                    .eq("file_path", path)
+                    .eq("file_owner", userId)
+                    .eq("status", "completed")
+                    .eq("deleted", false)
+                    .likeRight("file_name", "%" + fileName + "%")
+                    .orderBy(true, sort.equals("ascend"), "create_time")
+            ;
+        }
         Page<FileInfo> page = new Page<>(current_page, page_size);
         mapper.selectPage(page, queryWrapper);
         PageStructure<FileInfo> pageStructure = new PageStructure<>();
@@ -209,6 +222,7 @@ public class FileServiceImpl implements FileService {
         userService.updateUser(user);
     }
 
+
     @Override
     public void createFolder(FolderDto dto) {
         QueryWrapper<FileInfo> fileInfoQueryWrapper = new QueryWrapper<>();
@@ -239,7 +253,7 @@ public class FileServiceImpl implements FileService {
             }
             String fileId = (String) o;
             FileInfo fileInfo = mapper.selectById(fileId);
-            if(fileInfo.getFileType().equals(FileTypes.MEDIA.getType())){
+            if (fileInfo.getFileType().equals(FileTypes.MEDIA.getType())) {
                 fileInfo.setFileAbsPath("video/index.m3u8");
             }
             // 下载
@@ -295,10 +309,14 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
-        if(share.getShareExpireTime() != null && share.getShareExpireTime().before(new Date())){
+        if (share.getShareExpireTime() != null && share.getShareExpireTime().before(new Date())) {
             throw new NullPointerException("分享链接已过期");
         }
-        return mapper.selectById(share.getShareFileId());
+        FileInfo fileInfo = mapper.selectById(share.getShareFileId());
+        if (fileInfo.isDeleted()) {
+            throw new NullPointerException("文件已被删除");
+        }
+        return fileInfo;
     }
 
     @Override
@@ -314,18 +332,28 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<ShareCVo> shares() {
+    public PageStructure<ShareCVo> shares(Integer page_size, Integer current_page, String sort) {
         List<ShareCVo> res = new ArrayList<>();
         QueryWrapper<Share> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("share_user_id", StpUtil.getLoginId());
-        List<Share> shares = shareMapper.selectList(queryWrapper);
+        Page<Share> sharePage = shareMapper.selectPage(new Page<>(current_page, page_size), queryWrapper);
+        List<Share> shares = sharePage.getRecords();
         shares.forEach(share -> {
             ShareCVo shareCVo = new ShareCVo();
+            FileInfo fileInfo = mapper.selectById(share.getShareFileId());
+            if (fileInfo == null) {
+                return;
+            }
             shareCVo.setShare(share);
-            shareCVo.setFileInfo(mapper.selectById(share.getShareFileId()));
+            shareCVo.setFileInfo(fileInfo);
             res.add(shareCVo);
         });
-        return res;
+        PageStructure<ShareCVo> pageStructure = new PageStructure<>();
+        pageStructure.setData(res);
+        pageStructure.setTotal(sharePage.getTotal());
+        pageStructure.setCurrent_page(current_page);
+        pageStructure.setPage_size(page_size);
+        return pageStructure;
     }
 
     @Override
@@ -337,8 +365,8 @@ public class FileServiceImpl implements FileService {
     public void previewVideo(HttpServletResponse response, String id, String tsName) {
         try {
             FileInfo fileInfo = mapper.selectById(id);
-            if(fileInfo.getFileType().equals(FileTypes.MEDIA.getType())){
-                fileInfo.setFileAbsPath("video/"+id+"/"+tsName);
+            if (fileInfo.getFileType().equals(FileTypes.MEDIA.getType())) {
+                fileInfo.setFileAbsPath("video/" + id + "/" + tsName);
             }
             // 下载
             File file = new File(config.getDataSavePath() + File.separator + fileInfo.getFileAbsPath());
@@ -362,7 +390,9 @@ public class FileServiceImpl implements FileService {
         queryWrapper
                 .eq("file_owner", userId)
                 .eq("status", "completed")
+                .eq("deleted", false)
                 .orderByDesc("update_time")
+                .last("limit 50");
         ;
         return mapper.selectList(queryWrapper);
     }
@@ -373,10 +403,61 @@ public class FileServiceImpl implements FileService {
         FileInfo sourceData = mapper.selectById(fileInfo.getFileId());
         sourceData.setFileName(fileInfo.getFileName());
         sourceData.setUpdateTime(new Date());
-        if(!sourceData.getFileType().equals(FileTypes.FOLDER.getType())){
-            sourceData.setFileType(FileTypes.getFileType("."+FileUtil.getSuffix(fileInfo.getFileName())).getType());
+        if (!sourceData.getFileType().equals(FileTypes.FOLDER.getType())) {
+            sourceData.setFileType(FileTypes.getFileType("." + FileUtil.getSuffix(fileInfo.getFileName())).getType());
         }
         mapper.updateById(sourceData);
+    }
+
+    @Override
+    public void moveToRrecovery(String fileId) {
+        User user = userService.getUserById(StpUtil.getLoginId());
+        QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .eq("file_owner", user.getId())
+                .eq("file_id", fileId);
+        FileInfo fileInfo = mapper.selectOne(queryWrapper);
+        if (fileInfo == null) {
+            throw new NullPointerException("无效文件");
+        }
+        fileInfo.setDeleted(true);
+        mapper.updateById(fileInfo);
+        user.setUsedStorage(user.getUsedStorage() - fileInfo.getFileSize());
+        userService.updateUser(user);
+    }
+
+    @Override
+    public PageStructure<FileInfo> getDeletedFile(Integer pageSize, Integer currentPage, String sort) {
+        QueryWrapper<FileInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("deleted", true)
+                .eq("file_owner", StpUtil.getLoginId())
+                .orderBy(true, sort.equals("ascend"), "create_time")
+        ;
+        Page<FileInfo> page = new Page<>(currentPage, pageSize);
+        mapper.selectPage(page, wrapper);
+        PageStructure<FileInfo> pageStructure = new PageStructure<>();
+        pageStructure.setTotal(page.getTotal());
+        pageStructure.setData(page.getRecords());
+        pageStructure.setPage_size(pageSize);
+        pageStructure.setCurrent_page(currentPage);
+        return pageStructure;
+    }
+
+    @Override
+    public void unMoveToRecovery(String fileId) {
+        User user = userService.getUserById(StpUtil.getLoginId());
+        QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .eq("file_owner", user.getId())
+                .eq("file_id", fileId);
+        FileInfo fileInfo = mapper.selectOne(queryWrapper);
+        if (fileInfo == null) {
+            throw new NullPointerException("无效文件");
+        }
+        fileInfo.setDeleted(false);
+        mapper.updateById(fileInfo);
+        user.setUsedStorage(user.getUsedStorage() + fileInfo.getFileSize());
+        userService.updateUser(user);
     }
 
     @SneakyThrows
@@ -393,4 +474,5 @@ public class FileServiceImpl implements FileService {
         response.getOutputStream().close();
         fis.close();
     }
+
 }

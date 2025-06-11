@@ -41,6 +41,9 @@ public class RequestMonitorInterceptor implements HandlerInterceptor {
         accessLog.setAccessAs("admin");
         try {
             accessLog.setParams(JSON.toJSONString(request.getParameterMap()));
+            if(accessLog.getParams().length() > 255){
+                accessLog.setParams("参数过长");
+            }
         }catch (Exception e){
             accessLog.setParams("转换错误");
         }

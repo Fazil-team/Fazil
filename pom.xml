@@ -19,6 +19,7 @@
     <description>Fazil</description>
     <properties>
         <java.version>17</java.version>
+        <kotlin.version>2.1.20</kotlin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -125,7 +126,6 @@
             <version>1.6.2</version>
         </dependency>
 
-
     </dependencies>
 
     <build>
@@ -158,24 +158,6 @@
             </plugin>
 
             <!-- 2、完成对Java代码的编译，可以指定项目源码的jdk版本，编译后的jdk版本，以及编码 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <!-- 源代码使用的JDK版本 -->
-                    <source>17</source>
-                    <!-- 需要生成的目标class文件的编译版本 -->
-                    <target>17</target>
-                    <!-- 字符集编码 -->
-                    <encoding>UTF-8</encoding>
-                    <!-- 用来传递编译器自身不包含但是却支持的参数选项 -->
-                    <compilerArguments>
-                        <verbose/>
-                        <!-- windwos环境（二选一） -->
-                        <bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
-                    </compilerArguments>
-                </configuration>
-            </plugin>
 
             <!-- 3、将所有依赖的jar文件复制到target/lib目录 -->
             <plugin>
@@ -222,6 +204,79 @@
                         <exclude>*.yml</exclude>
                         <exclude>*.setting</exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <source>src/main/java</source>
+                                <source>target/generated-sources/annotations</source>
+                                <source>src/main/java</source>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmTarget>1.8</jvmTarget>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>testCompile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 源代码使用的JDK版本 -->
+                    <source>17</source>
+                    <!-- 需要生成的目标class文件的编译版本 -->
+                    <target>17</target>
+                    <!-- 字符集编码 -->
+                    <encoding>UTF-8</encoding>
+                    <!-- 用来传递编译器自身不包含但是却支持的参数选项 -->
+                    <compilerArguments>
+                        <verbose/>
+                        <!-- windwos环境（二选一） -->
+                        <bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
+                    </compilerArguments>
                 </configuration>
             </plugin>
 

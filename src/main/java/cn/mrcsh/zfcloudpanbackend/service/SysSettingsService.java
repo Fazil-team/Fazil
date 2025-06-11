@@ -2,6 +2,9 @@ package cn.mrcsh.zfcloudpanbackend.service;
 
 import cn.mrcsh.zfcloudpanbackend.entity.po.SysSettings;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface SysSettingsService {
     void update(SysSettings sysSettings);
@@ -9,4 +12,7 @@ public interface SysSettingsService {
     SysSettings getSysSettings();
 
     void getSysImg(HttpServletResponse response, String type);
+
+    void importUI(MultipartFile file) throws IOException;
+
 }

@@ -28,9 +28,17 @@ public class UIController {
     }
 
     @RequestMapping(value = {
+            "/home",
+            "/home/"
+    })
+    public String home() {
+        return "forward:/home/index.html";
+    }
+
+    @RequestMapping(value = {
             "/"
     })
     public String index() {
-        return "forward:/index.html";
+        return "forward:/index/index.html";
     }
 }

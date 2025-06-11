@@ -18,4 +18,5 @@ public class SysSettings {
     private String ICP;
     @TableField(exist = false)
     private boolean isRegister;
+    private String indexCode;
 }

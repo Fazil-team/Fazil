@@ -44,7 +44,7 @@ public class SettingsController extends BaseController {
     }
 
     @GetMapping
-    public response settings(){
+    public response settings() {
         SysSettings sysSettings = service.getSysSettings();
         sysSettings.setRegister(Temp.isAutoCheck);
         return success(sysSettings);
@@ -54,44 +54,46 @@ public class SettingsController extends BaseController {
     public response upload(@RequestParam("file") MultipartFile file, @PathVariable Integer action) throws IOException {
         String upload = "";
 //        minioUtils.upload(file);
-        log.info("文件名:{}, URL: {}, 后缀: {}",file.getOriginalFilename(),upload, FileUtil.getSuffix(file.getOriginalFilename()));
+        log.info("文件名:{}, URL: {}, 后缀: {}", file.getOriginalFilename(), upload, FileUtil.getSuffix(file.getOriginalFilename()));
         SysSettings sysSettings = service.getSysSettings();
-        File sys_img_folder = new File(config.getDataSavePath()+"/static/sys_img");
-        if(!sys_img_folder.exists()){
+        File sys_img_folder = new File(config.getDataSavePath() + "/static/sys_img");
+        if (!sys_img_folder.exists()) {
             sys_img_folder.mkdirs();
         }
-        switch (action){
+        switch (action) {
             // 登录背景
-            case 1->{
-                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "bg."+FileUtil.getSuffix(file.getOriginalFilename()));
+            case 1 -> {
+                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "bg." + FileUtil.getSuffix(file.getOriginalFilename()));
                 file.transferTo(imgFile);
                 sysSettings.setLoginBgImg(imgFile.getAbsolutePath());
             }
             // 整体logo
-            case 2->{
-                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "full_logo."+FileUtil.getSuffix(file.getOriginalFilename()));
+            case 2 -> {
+                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "full_logo." + FileUtil.getSuffix(file.getOriginalFilename()));
                 file.transferTo(imgFile);
                 sysSettings.setLogo(imgFile.getAbsolutePath());
             }
             // 小图标
-            case 3->{
-                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "icon."+FileUtil.getSuffix(file.getOriginalFilename()));
+            case 3 -> {
+                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "icon." + FileUtil.getSuffix(file.getOriginalFilename()));
                 file.transferTo(imgFile);
                 sysSettings.setLogoSmall(imgFile.getAbsolutePath());
             }
             // 黑色文字logo
-            case 4->{
-                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "logo_b."+FileUtil.getSuffix(file.getOriginalFilename()));
+            case 4 -> {
+                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "logo_b." + FileUtil.getSuffix(file.getOriginalFilename()));
                 file.transferTo(imgFile);
                 sysSettings.setLogoTextBlack(imgFile.getAbsolutePath());
             }
             // 白色文字logo
-            case 5->{
-                File imgFile = new File(config.getDataSavePath()+"/static/sys_img", "logo_w."+FileUtil.getSuffix(file.getOriginalFilename()));
+            case 5 -> {
+                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "logo_w." + FileUtil.getSuffix(file.getOriginalFilename()));
                 file.transferTo(imgFile);
                 sysSettings.setLogoTextWhite(imgFile.getAbsolutePath());
             }
-            default -> {return error("不支持的操作");}
+            default -> {
+                return error("不支持的操作");
+            }
         }
         service.update(sysSettings);
         return success(upload);
@@ -99,8 +101,14 @@ public class SettingsController extends BaseController {
 
     @GetMapping("/version")
     public response version() throws IOException {
-        ClassPathResource classPathResource = new ClassPathResource("version" );
+        ClassPathResource classPathResource = new ClassPathResource("version");
         String s = FileUtil.readString(classPathResource.getURL(), StandardCharsets.UTF_8).replaceAll("\r\n", "");
         return success(s);
+    }
+
+    @PostMapping("/import_ui")
+    public response change_ui(MultipartFile file) throws IOException {
+        service.importUI(file);
+        return success();
     }
 }

@@ -64,15 +64,22 @@ public class FileController extends BaseController {
 
     @GetMapping
     @SaCheckLogin
-    public response getFiles(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort) {
-        PageStructure<FileInfo> page = fileService.getFileList(request, path,page_size,current_page,sort);
+    public response getFiles(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort, String fileName) {
+        PageStructure<FileInfo> page = fileService.getFileList(request, path,page_size,current_page,sort, fileName);
         return success(page);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/real_del")
+    @SaCheckLogin
+    public response realDeleteFile(String file_id){
+        fileService.removeFile(file_id);
+        return success();
+    }
+
+    @DeleteMapping("")
     @SaCheckLogin
     public response deleteFile(String file_id){
-        fileService.removeFile(file_id);
+        fileService.moveToRrecovery(file_id);
         return success();
     }
 
@@ -125,10 +132,11 @@ public class FileController extends BaseController {
 
     @GetMapping("/shares")
     @SaCheckLogin
-    public response getAllShares(){
-        List<ShareCVo> shares = fileService.shares();
-        return success(shares);
+    public response getAllShares(Integer page_size, Integer current_page, String sort){
+        PageStructure<ShareCVo> structure = fileService.shares(page_size, current_page, sort);
+        return success(structure);
     }
+
     @DeleteMapping("/shares/{share_id}")
     @SaCheckLogin
     public response deleteShare(@PathVariable String share_id){
@@ -147,6 +155,18 @@ public class FileController extends BaseController {
     @SaCheckLogin
     public response remaneFile(@RequestBody FileInfo fileInfo){
         fileService.reNameFile(fileInfo);
+        return success();
+    }
+
+    @GetMapping("/rec")
+    public response getRecFile(Integer page_size, Integer current_page, String sort){
+       PageStructure<FileInfo> fileInfoPageStructure = fileService.getDeletedFile(page_size, current_page, sort);
+       return success(fileInfoPageStructure);
+    }
+
+    @PutMapping("/unmove_to_storage")
+    public response unMoveToRecovery(String file_id){
+        fileService.unMoveToRecovery(file_id);
         return success();
     }
 }

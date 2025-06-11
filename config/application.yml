@@ -1,4 +1,7 @@
 spring:
+  web:
+    resources:
+      static-locations: file:/
   servlet:
     multipart:
       enabled: true
@@ -14,7 +17,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: Cuishihao123
-    url: jdbc:mysql://host.mrcsh.cn:3306/zfcloudpan_test?timeZone=Asia/Shanghai
+    url: jdbc:mysql://host.mrcsh.cn:3307/zfcloudpan_db?timeZone=Asia/Shanghai
     druid:
       # 初始化时建立物理连接的个数
       initial-size: 5
