@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class FileServiceImpl implements FileService {
 
     @Value("${sa-token.token-name}")

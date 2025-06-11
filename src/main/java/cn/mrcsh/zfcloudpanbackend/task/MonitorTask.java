@@ -8,6 +8,7 @@ import cn.mrcsh.zfcloudpanbackend.service.MonitorService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.LinkedHashMap;
 
 @Component
 @Slf4j
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class MonitorTask {
 
     @Autowired

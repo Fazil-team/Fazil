@@ -8,12 +8,14 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
 @Aspect
 @Component
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class LockAspect {
 
     @Autowired

@@ -4,6 +4,7 @@ import cn.mrcsh.zfcloudpanbackend.service.SysSettingsService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/common")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class CommonController extends BaseController{
 
     @Autowired

@@ -12,6 +12,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Service
 @DependsOn("databaseInitialize")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class MenuServiceImpl implements MenuService {
 
     @Autowired

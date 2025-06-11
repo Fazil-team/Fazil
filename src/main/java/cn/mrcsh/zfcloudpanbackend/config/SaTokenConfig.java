@@ -3,6 +3,7 @@ package cn.mrcsh.zfcloudpanbackend.config;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
 import cn.dev33.satoken.stp.StpLogic;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Component
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class SaTokenConfig implements WebMvcConfigurer {
     @Bean
     public StpLogic getStpLogicJwt() {

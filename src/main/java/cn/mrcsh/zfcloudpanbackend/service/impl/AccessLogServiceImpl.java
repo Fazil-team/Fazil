@@ -7,10 +7,12 @@ import cn.mrcsh.zfcloudpanbackend.service.AccessLogService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class AccessLogServiceImpl implements AccessLogService {
 
     @Autowired

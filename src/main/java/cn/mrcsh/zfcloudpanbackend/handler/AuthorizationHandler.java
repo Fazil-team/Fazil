@@ -3,11 +3,13 @@ package cn.mrcsh.zfcloudpanbackend.handler;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.mrcsh.zfcloudpanbackend.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class AuthorizationHandler implements StpInterface {
 
     @Autowired

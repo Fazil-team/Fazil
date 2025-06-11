@@ -10,12 +10,14 @@ import cn.mrcsh.zfcloudpanbackend.config.RedisConfig;
 import cn.mrcsh.zfcloudpanbackend.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sms")
 @CrossOrigin
 @Slf4j
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class SMSController extends BaseController {
 
     @Autowired

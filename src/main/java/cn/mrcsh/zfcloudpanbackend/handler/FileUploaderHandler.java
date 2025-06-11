@@ -12,6 +12,7 @@ import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import com.alibaba.fastjson2.codec.FieldInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class FileUploaderHandler {
 
     @Autowired

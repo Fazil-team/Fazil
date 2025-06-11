@@ -10,6 +10,7 @@ import cn.mrcsh.zfcloudpanbackend.enums.MONITOR_TYPE;
 import cn.mrcsh.zfcloudpanbackend.service.MonitorService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/monitor")
 @CrossOrigin
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class MonitorController extends BaseController {
 
     @Autowired

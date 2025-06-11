@@ -3,6 +3,7 @@ package cn.mrcsh.zfcloudpanbackend.interceptors;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.mrcsh.zfcloudpanbackend.annotation.Monitor;
+import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.config.Temp;
 import cn.mrcsh.zfcloudpanbackend.entity.po.AccessLog;
 import cn.mrcsh.zfcloudpanbackend.enums.MONITOR_TYPE;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,9 +22,11 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class RequestMonitorInterceptor implements HandlerInterceptor {
 
-
+    @Autowired
+    private APPConfig appConfig;
 
     @Override
     @Monitor(MONITOR_TYPE.API)
@@ -47,7 +51,9 @@ public class RequestMonitorInterceptor implements HandlerInterceptor {
         }catch (Exception e){
             accessLog.setParams("转换错误");
         }
-        RuntimeUtils.getBean(AccessLogService.class).insertLog(accessLog);
+        if(RuntimeUtils.getBean(APPConfig.class).isInstalled()){
+            RuntimeUtils.getBean(AccessLogService.class).insertLog(accessLog);
+        }
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 }

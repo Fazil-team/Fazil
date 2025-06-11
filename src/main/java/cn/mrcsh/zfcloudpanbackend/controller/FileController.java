@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,7 @@ import java.util.List;
 @CrossOrigin
 @Slf4j
 @Tag(name = "文件模块")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class FileController extends BaseController {
 
     @Autowired

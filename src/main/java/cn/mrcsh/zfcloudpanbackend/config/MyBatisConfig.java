@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
 @Configurable
 @Slf4j
-public class MyBatisPagePluginConfig {
+@MapperScan("cn.mrcsh.zfcloudpanbackend.mapper")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
+public class MyBatisConfig {
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

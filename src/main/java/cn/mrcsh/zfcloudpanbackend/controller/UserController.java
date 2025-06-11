@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 @CrossOrigin
 @Slf4j
 @Tag(name = "用户模块")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class UserController extends BaseController {
 
     @Autowired

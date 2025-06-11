@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.util.NullableUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ import java.util.Date;
 @Slf4j
 @CrossOrigin
 @Tag(name = "鉴权模块")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class AuthController extends BaseController {
 
     @Autowired

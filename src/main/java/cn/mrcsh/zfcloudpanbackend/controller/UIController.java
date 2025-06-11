@@ -1,6 +1,9 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,33 +15,44 @@ import java.io.File;
 import java.io.IOException;
 
 @Controller
+//@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class UIController {
+
+    @Autowired
+    private APPConfig appConfig;
+
     @RequestMapping(value = {
             "/ui"
     })
     public String ui() {
-        return "forward:/ui/index.html/#/";
+        if(appConfig.isInstalled()){
+            return "forward:/ui/index.html/#/";
+        }else {
+            return "forward:/install/index.html";
+        }
     }
 
     @RequestMapping(value = {
             "/admin"
     })
     public String admin() {
-        return "forward:/admin/index.html/#/";
-    }
-
-    @RequestMapping(value = {
-            "/home",
-            "/home/"
-    })
-    public String home() {
-        return "forward:/home/index.html";
+        if(appConfig.isInstalled()){
+            return "forward:/admin/index.html/#/";
+        }else {
+            return "forward:/install/index.html";
+        }
     }
 
     @RequestMapping(value = {
             "/"
     })
     public String index() {
-        return "forward:/index/index.html";
+
+        if(appConfig.isInstalled()){
+            return "forward:/home/index.html";
+        }else {
+            return "forward:/install/index.html";
+        }
+
     }
 }
