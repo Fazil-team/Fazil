@@ -11,7 +11,7 @@
 Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访问，适合个人或小型团队的文件管理需求。
 # 关于技术栈
 - 前端 Nuxt + Vue + Naive + TypeScript + Ant Design
-- 后端SpringBoot MySQL Redis
+- 后端 Java + SpringBoot + MySQL + Redis
 
 ## 功能列表
 
@@ -39,13 +39,13 @@ Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访�
 - 积分机制
 
 ## 安装与配置
-
-### 1. 克隆仓库
-
 ```bash
-git clone https://github.com/Fazil-team/Fazil.git
-cd Fazil
+curl -L -o Fazil-0.0.1.zip https://github.com/Fazil-team/Fazil/releases/download/0.0.1/Fazil-0.0.1.zip
+unzip Fazil-0.0.1.zip
+cd Fazil-0.0.1
+curl -L https://github.com/Fazil-team/Fazil/releases/download/0.0.1/run.sh -o run.sh && chmod +x run.sh && ./run.sh
 ```
+默认端口为本地:8080端口 进入安装页面 请以Releases页面为准
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Fazil-team/Fazil&type=Date)](https://www.star-history.com/#Fazil-team/Fazil&Date)
