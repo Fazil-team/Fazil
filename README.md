@@ -2,10 +2,6 @@
   <img src="/logo.png" alt="Fazil Logo" width="200"/>
 </p>
 
-<p align="center">
-  <a href="https://t.me/cloudharry" target="_blank">Telegram 群组</a>
-</p>
-
 # Fazil 网盘系统
 
 ![License](https://img.shields.io/badge/license-AGPL--3.0-brightgreen)
