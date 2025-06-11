@@ -11,7 +11,7 @@
 Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访问，适合个人或小型团队的文件管理需求。
 # 关于技术栈
 - 前端 Nuxt + Vue + Naive + TypeScript + Ant Design
-- 后端 java + Spring + mysql
+- 后端SpringBoot MySQL Redis
 
 ## 功能列表
 
