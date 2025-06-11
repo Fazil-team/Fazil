@@ -1,6 +1,7 @@
 package cn.mrcsh.zfcloudpanbackend.utils;
 
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.*;
 import org.springframework.util.CollectionUtils;
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 // @Component
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class RedisUtil {
     // @Autowired
     private final RedisTemplate<String, Object> redisTemplate;

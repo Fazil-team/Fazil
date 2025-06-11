@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: file:config/db.yml
   servlet:
     multipart:
       enabled: true
@@ -11,10 +13,6 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: Cuishihao123
-    url: jdbc:mysql://host.mrcsh.cn:3306/demo_pan123?timeZone=Asia/Shanghai
     druid:
       # 初始化时建立物理连接的个数
       initial-size: 5
@@ -72,12 +70,6 @@ spring:
     redis:
       # Redis数据库索引（默认为0）
       database: 0
-      # Redis服务器地址
-      host: host.mrcsh.cn
-      # Redis服务器连接端口
-      port: 6379
-      # Redis服务器连接密码（默认为空）
-      password: Cuishihao123
       # 连接超时时间
       timeout: 10s
       lettuce:
@@ -90,9 +82,6 @@ spring:
           max-idle: 10
           # 连接池中的最小空闲连接
           min-idle: 0
-  mail:
-    username: virus_cui@163.com
-    password: WWSfpgaw3atmrcUz
 
 
 server:
@@ -106,7 +95,7 @@ sa-token:
   # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
   active-timeout: -1
   # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
-  is-concurrent: false
+  is-concurrent: true
   # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
   is-share: true
   # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
@@ -126,20 +115,19 @@ minio:
 app:
   # 默认用户注册角色ID
   default-role-id: 0
-  # 文件存储位置
-  data-save-path: /Users/qifei/Documents/Code/Project/ZFCloudPan/TestDS
   # 缓冲区大小
   buffer-size: 8
   # 客户端根目录
   client-baseurl: http://127.0.0.1:3000
   # ICP备案码
   icp: 京ICP备2025103455号
-  # 注册用户默认存储空间
-  init-user-size: 1024
-  ffmpeg:
-    enable: false
-    dir: /Users/qifei/Documents/Code/Runtime/ffmpeg
+  # 注册用户默认存储空间(GB)
+  init-user-size: 10
+  # 通信设置
   sms:
+    # 邮箱
     mail:
+      # 邮箱账户
       account: virus_cui@163.com
+      # 密钥
       password: WWSfpgaw3atmrcUz

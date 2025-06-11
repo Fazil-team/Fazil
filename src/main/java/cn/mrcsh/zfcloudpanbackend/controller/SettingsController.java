@@ -10,6 +10,7 @@ import cn.mrcsh.zfcloudpanbackend.utils.MinioUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ import java.util.List;
 @CrossOrigin
 @Slf4j
 @Tag(name = "设置模块")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class SettingsController extends BaseController {
 
     @Autowired

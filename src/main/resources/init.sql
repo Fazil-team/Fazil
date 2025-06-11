@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 80402 (8.4.2)
  Source Host           : host.mrcsh.cn:3306
- Source Schema         : zfcloudpan_test
+ Source Schema         : fazil_db
 
  Target Server Type    : MySQL
  Target Server Version : 80402 (8.4.2)
  File Encoding         : 65001
 
- Date: 27/03/2025 21:26:00
+ Date: 11/06/2025 16:57:59
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `t_access_log` (
   `update_time` datetime DEFAULT NULL,
   `deleted` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of t_access_log
@@ -61,9 +61,9 @@ CREATE TABLE `t_file_info` (
   `file_avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '视频文件缩略图',
   `create_time` datetime DEFAULT NULL COMMENT '用户创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '用户修改时间',
-  `file_path` varchar(255) DEFAULT NULL COMMENT '文件位置',
+  `file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '文件位置',
   PRIMARY KEY (`file_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of t_file_info
@@ -90,7 +90,7 @@ CREATE TABLE `t_menu` (
   `create_time` datetime DEFAULT NULL COMMENT '菜单创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '菜单修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of t_menu
@@ -123,6 +123,7 @@ INSERT INTO `t_menu` (`id`, `menu_name`, `menu_purview`, `menu_router_path`, `me
 INSERT INTO `t_menu` (`id`, `menu_name`, `menu_purview`, `menu_router_path`, `menu_pid`, `menu_comment`, `icon`, `menu_type`, `outline`, `sys`, `deleted`, `create_time`, `update_time`) VALUES (54, '软件注册', 'sys:register', '/sys/register', 2, '系统注册', '', 'ITEM', 0, 'sys', 0, NULL, NULL);
 INSERT INTO `t_menu` (`id`, `menu_name`, `menu_purview`, `menu_router_path`, `menu_pid`, `menu_comment`, `icon`, `menu_type`, `outline`, `sys`, `deleted`, `create_time`, `update_time`) VALUES (55, '概览', 'user:dashboard', '/dashboard', 0, '概览', 'DashboardOutlined', 'ITEM', 0, 'client', 0, NULL, NULL);
 INSERT INTO `t_menu` (`id`, `menu_name`, `menu_purview`, `menu_router_path`, `menu_pid`, `menu_comment`, `icon`, `menu_type`, `outline`, `sys`, `deleted`, `create_time`, `update_time`) VALUES (56, '公告管理', 'sys:notify', '/sys/notify', 0, '', 'FileOutlined', 'ITEM', 0, 'sys', 0, NULL, NULL);
+INSERT INTO `t_menu` (`id`, `menu_name`, `menu_purview`, `menu_router_path`, `menu_pid`, `menu_comment`, `icon`, `menu_type`, `outline`, `sys`, `deleted`, `create_time`, `update_time`) VALUES (57, '查询信息', 'sys:monitor:query', '', 1, '', '', 'ACTIVE', 0, 'sys', 0, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -130,9 +131,9 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_monitor`;
 CREATE TABLE `t_monitor` (
-  `id` varchar(255) DEFAULT NULL,
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `time_point` datetime DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `num` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -155,14 +156,14 @@ CREATE TABLE `t_role` (
   `create_time` datetime DEFAULT NULL COMMENT '角色创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '角色修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1880809480 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=1880809480 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of t_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_role` (`id`, `role_name`, `menu_ids`, `auth_ids`, `deleted`, `create_time`, `update_time`) VALUES (1, '管理员', '[1,50,51,55,56,2,3,4,5,6,33,7,8,9,10,32,11,28,29,30,31,23,39,43,48,54]', '[1,4,5,6,33,8,9,10,32,28,29,30,31,39,43,48,54,50,51,55,56]', 0, '2024-07-13 14:17:16', '2024-07-13 14:17:18');
-INSERT INTO `t_role` (`id`, `role_name`, `menu_ids`, `auth_ids`, `deleted`, `create_time`, `update_time`) VALUES (1880809478, '用户', '[55,50,51]', '[50,51,55]', 0, NULL, NULL);
+INSERT INTO `t_role` (`id`, `role_name`, `menu_ids`, `auth_ids`, `deleted`, `create_time`, `update_time`) VALUES (1, '管理员', '[1,57,2,3,4,5,6,33,7,8,9,10,32,11,28,29,30,31,23,39,43,48,54,55,50,51,52,56]', '[57,4,5,6,33,8,9,10,32,28,29,30,31,39,43,48,54,50,51,52,55,56]', 0, '2024-07-13 14:17:16', '2024-07-13 14:17:18');
+INSERT INTO `t_role` (`id`, `role_name`, `menu_ids`, `auth_ids`, `deleted`, `create_time`, `update_time`) VALUES (1880809478, '用户', '[55,50,51,52]', '[50,51,52,55]', 0, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -177,14 +178,15 @@ CREATE TABLE `t_setting` (
   `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `logo_text_black` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `logo_text_white` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `index_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of t_setting
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_setting` (`id`, `title`, `login_bg_img`, `logo_small`, `logo`, `logo_text_black`, `logo_text_white`) VALUES (0, 'CloudDisk', '/Users/qifei/Documents/Code/Project/ZFCloudPan/TestDS/static/sys_img/bg.jpeg', '/Users/qifei/Documents/Code/Project/ZFCloudPan/TestDS/static/sys_img/icon.png', '/Users/qifei/Documents/Code/Project/ZFCloudPan/TestDS/static/sys_img/full_logo.png', '/opt/server/data/static/sys_img/logo_b.png', '/opt/server/data/static/sys_img/logo_w.png');
+INSERT INTO `t_setting` (`id`, `title`, `login_bg_img`, `logo_small`, `logo`, `logo_text_black`, `logo_text_white`, `index_code`) VALUES (0, 'Fazil', '', '', '', '', '', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -192,15 +194,15 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_share`;
 CREATE TABLE `t_share` (
-  `share_id` varchar(255) NOT NULL COMMENT '分享ID',
-  `share_user_id` varchar(255) DEFAULT NULL COMMENT '分享用户',
+  `share_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分享ID',
+  `share_user_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '分享用户',
   `share_expire_time` datetime DEFAULT NULL COMMENT '分享超时时间',
-  `share_pwd` varchar(255) DEFAULT NULL COMMENT '分享密码',
-  `share_file_id` varchar(255) DEFAULT NULL COMMENT '分享文件ID',
-  `share_url` varchar(255) DEFAULT NULL COMMENT '分享地址',
+  `share_pwd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '分享密码',
+  `share_file_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '分享文件ID',
+  `share_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '分享地址',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`share_id`)
+  PRIMARY KEY (`share_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
@@ -227,13 +229,12 @@ CREATE TABLE `t_user` (
   `create_time` datetime DEFAULT NULL COMMENT '用户创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '用户修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of t_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_user` (`id`, `user_name`, `password`, `role`, `email`, `avatar`, `storage`, `used_storage`, `settings`, `deleted`, `create_time`, `update_time`) VALUES ('1811753528800489472', 'admin', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, 'example@example.com', '1811753528800489472.jpg', 107374182400, 122168315, '{}', 0, '2025-02-22 03:40:37', '2024-07-12 21:24:37');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

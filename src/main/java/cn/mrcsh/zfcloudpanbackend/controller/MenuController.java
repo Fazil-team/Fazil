@@ -8,6 +8,7 @@ import cn.mrcsh.zfcloudpanbackend.service.MenuService;
 import cn.mrcsh.zfcloudpanbackend.utils.TreeUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/menu")
 @Tag(name = "菜单模块")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
+
 public class MenuController extends BaseController {
 
     @Autowired

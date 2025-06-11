@@ -5,6 +5,7 @@ import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.mapper.FileInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -13,6 +14,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Component
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class GraphicUtils {
     @Value("${app.ffmpeg.dir}")
     private String ffmpegWorkDir;

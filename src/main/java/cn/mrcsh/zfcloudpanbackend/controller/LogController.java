@@ -10,6 +10,7 @@ import cn.mrcsh.zfcloudpanbackend.service.AccessLogService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @Slf4j
 @Tag(name = "日志模块")
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class LogController extends BaseController {
 
     @Autowired

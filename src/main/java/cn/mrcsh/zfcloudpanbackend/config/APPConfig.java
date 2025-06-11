@@ -23,4 +23,6 @@ public class APPConfig {
     private String mailPassword;
     @Value("${app.ffmpeg.enable}")
     private boolean enableFfmpeg;
+    @Value("${app.installed}")
+    private boolean isInstalled = false;
 }

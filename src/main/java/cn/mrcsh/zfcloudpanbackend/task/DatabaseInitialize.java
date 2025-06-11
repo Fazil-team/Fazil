@@ -1,11 +1,16 @@
 package cn.mrcsh.zfcloudpanbackend.task;
 
 import cn.hutool.core.io.resource.ClassPathResource;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.crypto.SecureUtil;
 import jakarta.annotation.PostConstruct;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -14,34 +19,29 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * 用于第一次启动时，初始化数据库的配置类
  */
 @Slf4j
-@Configuration
+@Component
+@Setter
 public class DatabaseInitialize {
 
     /**
      * 读取连接地址
      */
-    @Value("${spring.datasource.url}")
     private String url;
 
     /**
      * 读取用户名
      */
-    @Value("${spring.datasource.username}")
     private String username;
 
     /**
      * 读取密码
      */
-    @Value("${spring.datasource.password}")
     private String password;
 
     /**
@@ -122,8 +122,7 @@ public class DatabaseInitialize {
     /**
      * 该方法用于检测数据库是否需要初始化，如果是则执行SQL脚本进行初始化操作
      */
-    @PostConstruct
-    private void initDatabase() {
+    public void initDatabase() {
         log.info("开始检查数据库是否需要初始化...");
         // 检测当前连接数据库是否存在
         if (currentDatabaseExists()) {
@@ -139,6 +138,28 @@ public class DatabaseInitialize {
             log.info("初始化表格完成！");
         } catch (Exception e) {
             log.error("初始化表格时，连接数据库失败！");
+            e.printStackTrace();
+        }
+    }
+
+    public void initAdminUsers(String adminUsername, String adminPassword) {
+        String sql = "INSERT INTO t_user (id, user_name, password, role, email, avatar, storage, used_storage, settings, deleted, create_time, update_time) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())";
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, IdUtil.getSnowflakeNextIdStr());
+            stmt.setString(2, adminUsername);
+            stmt.setString(3, SecureUtil.sha256(adminPassword));  // 密码加密
+            stmt.setInt(4, 1);
+            stmt.setString(5, "admin@example.com");
+            stmt.setString(6, "https://example.com/avatar.png");
+            stmt.setLong(7, 10L * 1024 * 1024 * 1024);  // 10GB
+            stmt.setLong(8, 0);
+            stmt.setString(9, "{}");
+            stmt.setBoolean(10, false);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            log.error("初始化管理员时，连接数据库失败！");
             e.printStackTrace();
         }
     }

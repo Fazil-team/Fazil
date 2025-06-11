@@ -126,6 +126,11 @@
             <version>1.6.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.2</version> <!-- 或你喜欢的版本 -->
+        </dependency>
     </dependencies>
 
     <build>

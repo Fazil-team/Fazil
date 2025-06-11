@@ -12,6 +12,7 @@ import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
 import cn.mrcsh.zfcloudpanbackend.service.MonitorService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class MonitorServiceImpl implements MonitorService {
 
     @Autowired

@@ -1,0 +1,17 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+app:
+  installed: false
+  # 文件存储位置
+  data-save-path: ~/fazil
+  ffmpeg:
+    # 是否开启转码
+    enable: false
+    # ffmpeg bin目录
+    dir: ~/ffmpeg

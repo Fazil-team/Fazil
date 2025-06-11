@@ -8,6 +8,7 @@ import cn.mrcsh.zfcloudpanbackend.config.Temp;
 import cn.mrcsh.zfcloudpanbackend.utils.SerialNumberUtil;
 import com.alibaba.fastjson2.JSON;
 import lombok.SneakyThrows;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.io.File;
 @RestController
 @RequestMapping("/license")
 @CrossOrigin
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class LicenseController extends BaseController{
 
     @PostMapping("/check")
