@@ -47,4 +47,5 @@ Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访�
 git clone https://github.com/Fazil-team/Fazil.git
 cd Fazil
 ```
-[![Star History Chart](https://api.star-history.com/svg?repos=Fazil-team/Fazil&Date)]
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=Fazil-team/Fazil&type=Date)](https://www.star-history.com/#Fazil-team/Fazil&Date)
