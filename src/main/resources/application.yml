@@ -120,7 +120,7 @@ app:
   # 客户端根目录
   client-baseurl: http://127.0.0.1:3000
   # ICP备案码
-  icp: 京ICP备2025103455号
+  icp: 
   # 注册用户默认存储空间(GB)
   init-user-size: 10
   # 通信设置
@@ -128,6 +128,6 @@ app:
     # 邮箱
     mail:
       # 邮箱账户
-      account: virus_cui@163.com
+      account: 
       # 密钥
-      password: WWSfpgaw3atmrcUz
+      password: 
