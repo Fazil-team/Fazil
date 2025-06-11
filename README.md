@@ -48,4 +48,5 @@ git clone https://github.com/Fazil-team/Fazil.git
 cd Fazil
 ```
 ## Star History
+
 [![Star History Chart](https://api.star-history.com/svg?repos=Fazil-team/Fazil&type=Date)](https://www.star-history.com/#Fazil-team/Fazil&Date)
