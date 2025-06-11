@@ -12,6 +12,7 @@ Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访�
 # 关于技术栈
 - 前端 Nuxt + Vue + Naive + TypeScript + Ant Design
 - 后端 Java + SpringBoot + MySQL + Redis
+- 目前兼容debian和ubuntu
 
 ## 功能列表
 
@@ -40,10 +41,7 @@ Fazil 是一个轻量级、高效且安全的网盘系统，支持多用户访�
 
 ## 安装与配置
 ```bash
-curl -L -o Fazil-0.0.1.zip https://github.com/Fazil-team/Fazil/releases/download/0.0.1/Fazil-0.0.1.zip
-unzip Fazil-0.0.1.zip
-cd Fazil-0.0.1
-curl -L https://github.com/Fazil-team/Fazil/releases/download/0.0.1/run.sh -o run.sh && chmod +x run.sh && ./run.sh
+bash -c "$(curl -sSL https://github.com/Fazil-team/Fazil/releases/download/0.0.1/install.sh)"
 ```
 默认端口为本地:8080端口 进入安装页面 请以Releases页面为准
 ## Star History
