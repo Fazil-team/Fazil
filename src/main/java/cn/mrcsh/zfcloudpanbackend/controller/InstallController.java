@@ -46,7 +46,8 @@ public class InstallController extends BaseController {
                     true,
                     installStructure.getData_dir(),
                     installStructure.isFfmpeg(),
-                    installStructure.getFfmpeg_bin_dir());
+                    installStructure.getFfmpeg_bin_dir(),
+                    installStructure.getDomain());
             databaseInitialize.setUrl(realJdbcURL);
             databaseInitialize.setUsername(installStructure.getMysql_username());
             databaseInitialize.setPassword(installStructure.getMysql_password());
@@ -77,7 +78,8 @@ public class InstallController extends BaseController {
             boolean installed,
             String dataDir,
             boolean ffmpeg_enable,
-            String ffmpeg_bin_dir
+            String ffmpeg_bin_dir,
+            String domain
     ) throws IOException {
         // 构建完整的 Map 结构
         Map<String, Object> root = new LinkedHashMap<>();
@@ -114,6 +116,7 @@ public class InstallController extends BaseController {
         Map<String, Object> app = new LinkedHashMap<>();
         app.put("installed", installed);
         app.put("data-save-path", dataDir);
+        app.put("client-baseurl", domain);
 
         Map<String, Object> ffmpeg = new LinkedHashMap<>();
         ffmpeg.put("enable", ffmpeg_enable);
@@ -147,13 +150,11 @@ public class InstallController extends BaseController {
                     password:
                 app:
                   installed: false
-                  # 文件存储位置
-                  data-save-path: /Users/qifei/Documents/Code/Project/ZFCloudPan/TestDS
+                  data-save-path: ''
+                  client-baseurl: ''
                   ffmpeg:
-                    # 是否开启转码
                     enable: false
-                    # ffmpeg bin目录
-                    dir: /Users/qifei/Documents/Code/Runtime/ffmpeg
+                    dir: ''
                 """);
         bw.flush();
         bw.close();

@@ -19,4 +19,5 @@ public class InstallStructure {
     private String data_dir;
     private boolean ffmpeg;
     private String ffmpeg_bin_dir;
+    private String domain;
 }

@@ -1,5 +1,9 @@
 <template>
   <a-form layout="vertical" @submit="submit" :model="formData">
+    <a-form-item label="域名地址" :rules="[{required:true,message:'请填写域名地址'}]"
+                 field="domain" validate-trigger="change">
+      <a-input v-model="formData.domain" placeholder="例如：https://example.fazil.net:8090(支持端口访问)" :min="1" :max="65535"/>
+    </a-form-item>
     <a-form-item label="应用端口" :rules="[{required:true,message:'请填写应用端口'}]"
                  field="app_port" validate-trigger="change">
       <a-input-number v-model="formData.app_port" placeholder="例如：8080" :min="1" :max="65535"/>
@@ -15,10 +19,7 @@
                  field="ffmpeg_bin_dir" validate-trigger="change">
       <a-input v-model="formData.ffmpeg_bin_dir"/>
     </a-form-item>
-    <a-form-item  label="数据存储位置" :rules="[{required:true,message:'请填写应用端口'}]"
-                 field="app_port" validate-trigger="change">
-      <a-input-number v-model="formData.app_port" placeholder="例如：8080" :min="1" :max="65535"/>
-    </a-form-item>
+
     <a-form-item label="管理员用户名" :rules="[{required:true,message:'请填写管理员用户名'}]"
                  field="admin_username" validate-trigger="change">
       <a-input v-model="formData.admin_username"/>

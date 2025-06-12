@@ -292,7 +292,7 @@ public class FileServiceImpl implements FileService {
         if (share.getSharePwd() == null || share.getSharePwd().isEmpty()) {
             share.setSharePwd(RandomUtil.randomNumbers(6));
         }
-        share.setShareUrl(config.getClientBaseURL() + "/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
+        share.setShareUrl(config.getClientBaseURL() + "/ui#/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
         shareMapper.insert(share);
         return share;
     }

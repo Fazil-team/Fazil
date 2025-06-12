@@ -11,7 +11,7 @@
  Target Server Version : 80402 (8.4.2)
  File Encoding         : 65001
 
- Date: 11/06/2025 16:57:59
+ Date: 12/06/2025 11:13:10
 */
 
 SET NAMES utf8mb4;
@@ -176,9 +176,13 @@ CREATE TABLE `t_setting` (
   `login_bg_img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `logo_small` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `logo_text_black` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `logo_text_white` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `index_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `smtp_host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `smtp_email` varchar(255) DEFAULT NULL,
+  `smtp_password` varchar(255) DEFAULT NULL,
+  `smtp_pattern` text,
+  `icp` varchar(255) DEFAULT NULL,
+  `smtp_port` int DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -186,7 +190,7 @@ CREATE TABLE `t_setting` (
 -- Records of t_setting
 -- ----------------------------
 BEGIN;
-INSERT INTO `t_setting` (`id`, `title`, `login_bg_img`, `logo_small`, `logo`, `logo_text_black`, `logo_text_white`, `index_code`) VALUES (0, 'Fazil', '', '', '', '', '', NULL);
+INSERT INTO `t_setting` (`id`, `title`, `login_bg_img`, `logo_small`, `logo`, `index_code`, `smtp_host`, `smtp_email`, `smtp_password`, `smtp_pattern`, `icp`, `smtp_port`) VALUES (0, 'Fazil', '', '', '', NULL, '', '', '', '', '', NULL);
 COMMIT;
 
 -- ----------------------------

@@ -30,21 +30,18 @@ public class ZfCloudPanBackendApplication {
     private static ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
+        // 初始化文件系统
+        // 创建config文件夹
         Temp.WorkDir = System.getProperty("user.dir");
+        File configFolder = new File(Temp.WorkDir + File.separator + "config");
+        if(!configFolder.exists()){
+            configFolder.mkdirs();
+        }
+        // 创建static文件夹
+        File staticFolder = new File(Temp.WorkDir + File.separator + "static");
+        if(!staticFolder.exists()){
+            staticFolder.mkdirs();
+        }
         context = SpringApplication.run(ZfCloudPanBackendApplication.class, args);
     }
-
-    /**
-     * 调用该方法即可完成应用重启
-     */
-    public static void restart() {
-        ApplicationArguments args = context.getBean(ApplicationArguments.class);
-        Thread thread = new Thread(() -> {
-            context.close();
-            context = SpringApplication.run(ZfCloudPanBackendApplication.class, args.getSourceArgs());
-        });
-        thread.setDaemon(false); // 必须将重启线程设置为user线程，防止close方法触发jvm关闭所有线程，导致重启失败（当唯一运行的线程都是守护进程线程时，Java虚拟机将退出）
-        thread.start();
-    }
-
 }
