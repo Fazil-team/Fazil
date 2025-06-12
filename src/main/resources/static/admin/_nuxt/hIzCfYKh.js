@@ -1,0 +1,1 @@
+import{Q as u,K as t,cC as n,ax as i}from"./DJIGoAyo.js";import{u as a}from"./DTElVVC9.js";const f=()=>{u.post("/auth/logout").then(e=>{const s=t(a()).user_info,o=t(n()).layout;s.value=void 0,o.value="login"})},g=e=>new Promise(s=>{u.post("/auth/login/sys",e).then(o=>{const r=t(a()).user_info;r.value=o.data.data,i("登陆成功"),s(o)})});export{g as login,f as logout};
