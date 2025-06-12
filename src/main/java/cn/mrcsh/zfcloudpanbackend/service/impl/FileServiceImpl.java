@@ -21,6 +21,7 @@ import cn.mrcsh.zfcloudpanbackend.mapper.ShareMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
 import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
+import cn.mrcsh.zfcloudpanbackend.service.UserStorageService;
 import cn.mrcsh.zfcloudpanbackend.utils.GraphicUtils;
 import cn.mrcsh.zfcloudpanbackend.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -33,6 +34,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,6 +76,10 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private GraphicUtils graphicUtils;
+
+    @Autowired
+    @Lazy
+    private UserStorageService userStorageService;
 
     @Override
     public synchronized void save(FileInfo fileInfo) throws IOException {
@@ -141,7 +147,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, Integer page_size, Integer current_page, String sort, String fileName) {
+    public PageStructure<FileInfo> getFileList(HttpServletRequest request, String path, String fileAbsPath, Integer page_size, Integer current_page, String sort, String fileName) {
         String userId = (String) StpUtil.getLoginId();
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
         if (fileName != null && !fileName.isEmpty()) {
@@ -153,6 +159,22 @@ public class FileServiceImpl implements FileService {
                     .orderBy(true, sort.equals("ascend"), "create_time")
             ;
         } else {
+            if (!path.equals("/")) {
+                String[] path_split = path.split("/");
+                QueryWrapper<FileInfo> storageWrapper = new QueryWrapper<>();
+                storageWrapper.eq("file_owner", userId)
+                        .eq("file_name", path_split[1]);
+                FileInfo fileInfo = mapper.selectOne(storageWrapper);
+                if (fileInfo.getFileAbsPath() != null) {
+                    List<FileInfo> fileList = userStorageService.getFileList(fileInfo, "", path);
+                    if(fileInfo != null){
+                        PageStructure<FileInfo> pageStructure = new PageStructure<>();
+                        pageStructure.setTotal((long) fileList.size());
+                        pageStructure.setData(fileList);
+                        return pageStructure;
+                    }
+                }
+            }
             queryWrapper
                     .eq("file_path", path)
                     .eq("file_owner", userId)

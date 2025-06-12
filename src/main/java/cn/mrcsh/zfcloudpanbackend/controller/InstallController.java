@@ -6,7 +6,10 @@ import cn.mrcsh.zfcloudpanbackend.entity.structure.InstallStructure;
 import cn.mrcsh.zfcloudpanbackend.task.DatabaseInitialize;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.Null;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +21,14 @@ import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @CrossOrigin
 public class InstallController extends BaseController {
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
     private String jdbcUrl = "jdbc:mysql://#HOST:#PORT/#DB_NAME?timeZone=#TIMEZONE";
 
     @Autowired
@@ -34,6 +42,7 @@ public class InstallController extends BaseController {
                     .replaceAll("#PORT",String.valueOf(installStructure.getMysql_port()))
                     .replaceAll("#DB_NAME",installStructure.getMysql_db_name())
                     .replaceAll("#TIMEZONE", "Asia/Shanghai");
+
             writeFullConfig(Temp.WorkDir+"/config/db.yml",
                     installStructure.getApp_port(),
                     realJdbcURL,
@@ -54,6 +63,16 @@ public class InstallController extends BaseController {
             databaseInitialize.initDatabase();
             // 写入管理员用户
             databaseInitialize.initAdminUsers(installStructure.getAdmin_username(), installStructure.getAdmin_password());
+            new Thread(() -> {
+                try {
+                    Thread.sleep(100);
+                    log.info("停机");
+                    SpringApplication.exit(applicationContext);
+                    System.exit(0);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
             return success(installStructure);
         }catch (Exception e){
             try {

@@ -2,7 +2,7 @@
   <a-form layout="vertical" @submit="submit" :model="formData">
     <a-form-item label="域名地址" :rules="[{required:true,message:'请填写域名地址'}]"
                  field="domain" validate-trigger="change">
-      <a-input v-model="formData.domain" placeholder="例如：https://example.fazil.net:8090(支持端口访问)" :min="1" :max="65535"/>
+      <a-input v-model="formData.domain" placeholder="例如：https://example.fazil.net:8090(请将端口号填写完整)"/>
     </a-form-item>
     <a-form-item label="应用端口" :rules="[{required:true,message:'请填写应用端口'}]"
                  field="app_port" validate-trigger="change">

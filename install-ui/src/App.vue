@@ -70,7 +70,6 @@ const nextStep = () => currentStep.value++;
 const prevStep = () => currentStep.value--;
 
 const submitInstall = async () => {
-  console.log(formData.value)
   loading.value = true;
   axios.post("/install", formData.value).then(res=>{
     if(res.data.code == 1){
