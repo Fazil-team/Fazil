@@ -8,8 +8,8 @@ spring:
     password:
 app:
   installed: false
-  # 文件存储位置
-  data-save-path:
+  data-save-path: ''
+  client-baseurl: ''
   ffmpeg:
     enable: false
-    dir:
+    dir: ''

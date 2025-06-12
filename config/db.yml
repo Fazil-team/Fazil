@@ -1,17 +1,21 @@
 server:
   port: 8080
 spring:
+  data:
+    redis:
+      host: mrcsh.cn
+      port: 6379
+      username: ''
+      password: Cuishihao123
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url:
-    username:
-    password:
+    url: jdbc:mysql://mrcsh.cn:3306/fazil_db?timeZone=Asia/Shanghai
+    username: root
+    password: Cuishihao123
 app:
-  installed: false
-  # 文件存储位置
-  data-save-path: ~/fazil
+  installed: true
+  data-save-path: /Users/qifei/Documents/Test
+  client-baseurl: http://127.0.0.1:8080
   ffmpeg:
-    # 是否开启转码
     enable: false
-    # ffmpeg bin目录
-    dir: ~/ffmpeg
+    dir: ''

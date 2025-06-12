@@ -1,7 +1,6 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.resource.ResourceUtil;
 import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.config.Temp;
 import cn.mrcsh.zfcloudpanbackend.entity.po.SysSettings;
@@ -17,11 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @RestController
 @RequestMapping("/setting")
@@ -77,21 +72,9 @@ public class SettingsController extends BaseController {
             }
             // 小图标
             case 3 -> {
-                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "icon." + FileUtil.getSuffix(file.getOriginalFilename()));
-                file.transferTo(imgFile);
-                sysSettings.setLogoSmall(imgFile.getAbsolutePath());
-            }
-            // 黑色文字logo
-            case 4 -> {
-                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "logo_b." + FileUtil.getSuffix(file.getOriginalFilename()));
-                file.transferTo(imgFile);
-                sysSettings.setLogoTextBlack(imgFile.getAbsolutePath());
-            }
-            // 白色文字logo
-            case 5 -> {
-                File imgFile = new File(config.getDataSavePath() + "/static/sys_img", "logo_w." + FileUtil.getSuffix(file.getOriginalFilename()));
-                file.transferTo(imgFile);
-                sysSettings.setLogoTextWhite(imgFile.getAbsolutePath());
+                File icoFile = new File(Temp.WorkDir+"/static/favicon.ico");
+                file.transferTo(icoFile);
+                sysSettings.setLogoSmall(icoFile.getAbsolutePath());
             }
             default -> {
                 return error("不支持的操作");

@@ -36,9 +36,6 @@ public class SysSettingsServiceImpl implements SysSettingsService {
     @Autowired
     private FileUtils fileUtils;
 
-    @Value("${app.icp}")
-    private String icp;
-
     @Override
     public void update(SysSettings sysSettings) {
         sysSettings.setId(0);
@@ -48,9 +45,7 @@ public class SysSettingsServiceImpl implements SysSettingsService {
 
     @Override
     public SysSettings getSysSettings() {
-        SysSettings sysSettings = sysSettingsMapper.selectById(0);
-        sysSettings.setICP(icp);
-        return sysSettings;
+        return sysSettingsMapper.selectById(0);
     }
 
     @Override
@@ -65,12 +60,6 @@ public class SysSettingsServiceImpl implements SysSettingsService {
             }
             case "3" -> {
                 fileUtils.downloadFile(new File(sysSettings.getLogoSmall()), response);
-            }
-            case "4" -> {
-                fileUtils.downloadFile(new File(sysSettings.getLogoTextBlack()), response);
-            }
-            case "5" -> {
-                fileUtils.downloadFile(new File(sysSettings.getLogoTextWhite()), response);
             }
         }
     }
