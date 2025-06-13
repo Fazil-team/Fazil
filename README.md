@@ -2,7 +2,7 @@
   <img src="/logo.png" alt="Fazil Logo" width="200"/>
 </p>
 
-# Fazil 网盘系统
+# Fazil 网盘系统 1
 
 ![License](https://img.shields.io/badge/license-AGPL--3.0-brightgreen)
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
