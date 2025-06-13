@@ -6,11 +6,12 @@ SERVICE_NAME="fazil"
 SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
 
 echo "=================================="
-echo "   Fazil 应用安装/卸载脚本"
+echo "   Fazil 应用安装/卸载/更新脚本"
 echo "=================================="
 echo "1. 安装"
 echo "2. 卸载"
-read -p "请选择操作 [1/2]: " choice
+echo "3. 更新"
+read -p "请选择操作 [1/2/3]: " choice
 
 if [ "$choice" = "1" ]; then
     echo ""
@@ -108,7 +109,44 @@ elif [ "$choice" = "2" ]; then
     echo ""
     echo "[完成] 卸载已完成。"
 
+elif [ "$choice" = "3" ]; then
+    echo ""
+    echo "[信息] 执行更新操作..."
+
+    if [ -f "$SERVICE_FILE" ]; then
+        INSTALL_DIR=$(grep "^WorkingDirectory=" "$SERVICE_FILE" | cut -d'=' -f2)
+        echo "[信息] 检测到安装目录: $INSTALL_DIR"
+    else
+        echo "[错误] 未检测到安装信息，请先安装后再更新"
+        exit 1
+    fi
+
+    cd "$INSTALL_DIR"
+
+    echo "[信息] 下载最新版本..."
+    sudo wget -O Fazil.zip https://github.com/Fazil-team/Fazil/releases/download/lastest/Fazil.zip
+
+    echo "[信息] 停止服务..."
+    sudo systemctl stop "${SERVICE_NAME}"
+
+    echo "[信息] 删除旧文件..."
+    sudo rm -rf lib app.jar
+
+    echo "[信息] 解压新文件..."
+    sudo unzip -o -q Fazil.zip lib/* app.jar
+
+    echo "[信息] 设置权限..."
+    sudo chmod -R 755 "$INSTALL_DIR"
+
+    echo "[信息] 重启服务..."
+    sudo systemctl restart "${SERVICE_NAME}"
+
+    echo ""
+    echo "[完成] 更新成功！服务已重启。"
+    echo "[服务] 使用以下命令查看状态："
+    echo "       sudo systemctl status ${SERVICE_NAME} -n 50"
+
 else
-    echo "[错误] 输入无效，请输入 1 或 2"
+    echo "[错误] 输入无效，请输入 1 / 2 / 3"
     exit 1
 fi
