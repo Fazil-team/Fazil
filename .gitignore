@@ -113,3 +113,4 @@ build/
 /src/main/resources/static/favicon.ico
 /src/main/resources/static/index.html
 /src/main/resources/static/test.pdf
+/config_backup/

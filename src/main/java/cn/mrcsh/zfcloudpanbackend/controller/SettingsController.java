@@ -1,5 +1,6 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.io.FileUtil;
 import cn.mrcsh.zfcloudpanbackend.config.APPConfig;
 import cn.mrcsh.zfcloudpanbackend.config.Temp;
@@ -35,6 +36,7 @@ public class SettingsController extends BaseController {
     private APPConfig config;
 
     @PutMapping
+    @SaCheckLogin
     public response saveSetting(@RequestBody SysSettings setting) {
         service.update(setting);
         return success();
@@ -48,6 +50,7 @@ public class SettingsController extends BaseController {
     }
 
     @PostMapping("/upload/{action}")
+    @SaCheckLogin
     public response upload(@RequestParam("file") MultipartFile file, @PathVariable Integer action) throws IOException {
         String upload = "";
 //        minioUtils.upload(file);
@@ -92,6 +95,7 @@ public class SettingsController extends BaseController {
     }
 
     @PostMapping("/import_ui")
+    @SaCheckLogin
     public response change_ui(MultipartFile file) throws IOException {
         service.importUI(file);
         return success();

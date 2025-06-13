@@ -10,6 +10,7 @@ import cn.mrcsh.zfcloudpanbackend.entity.dto.FolderDto;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.entity.po.Share;
 import cn.mrcsh.zfcloudpanbackend.entity.po.User;
+import cn.mrcsh.zfcloudpanbackend.entity.po.UserStorage;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareCVo;
 import cn.mrcsh.zfcloudpanbackend.entity.vo.ShareVo;
@@ -19,6 +20,7 @@ import cn.mrcsh.zfcloudpanbackend.enums.MONITOR_TYPE;
 import cn.mrcsh.zfcloudpanbackend.mapper.FileInfoMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.ShareMapper;
 import cn.mrcsh.zfcloudpanbackend.mapper.UserMapper;
+import cn.mrcsh.zfcloudpanbackend.mapper.UserStorageMapper;
 import cn.mrcsh.zfcloudpanbackend.service.FileService;
 import cn.mrcsh.zfcloudpanbackend.service.UserService;
 import cn.mrcsh.zfcloudpanbackend.service.UserStorageService;
@@ -80,6 +82,8 @@ public class FileServiceImpl implements FileService {
     @Autowired
     @Lazy
     private UserStorageService userStorageService;
+    @Autowired
+    private UserStorageMapper userStorageMapper;
 
     @Override
     public synchronized void save(FileInfo fileInfo) throws IOException {
@@ -91,7 +95,15 @@ public class FileServiceImpl implements FileService {
             fileInfo.setUpdateTime(new Date());
             mapper.updateById(fileInfo);
         }
-        if (fileInfo.getChunkNum().equals(fileInfo.getChunkIndex() + 1)) {
+        String[] split = fileInfo.getFilePath().split("/");
+        FileInfo ex = null;
+        if(split.length > 1){
+            QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("file_name", split[1])
+                    .eq("file_owner", StpUtil.getLoginId());
+            ex = mapper.selectOne(queryWrapper);
+        }
+        if (fileInfo.getChunkNum().equals(fileInfo.getChunkIndex() + 1) && ex == null) {
             Temp.num++;
             String loginId = (String) StpUtil.getLoginId();
             User user = userMapper.selectById(loginId);
@@ -144,6 +156,17 @@ public class FileServiceImpl implements FileService {
         outputStream.flush();
         outputStream.close();
         FileUtil.del(tempFolder);
+        // 上传到第三方平台
+        String[] split = source.getFilePath().split("/");
+        if(split.length > 1){
+            QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("file_name", split[1])
+                    .eq("file_owner", StpUtil.getLoginId());
+            FileInfo ex = mapper.selectOne(queryWrapper);
+            if(ex != null) {
+                userStorageService.upload(source ,ex, sourceFile);
+            }
+        }
     }
 
     @Override
@@ -166,11 +189,8 @@ public class FileServiceImpl implements FileService {
                         .eq("file_name", path_split[1]);
                 FileInfo fileInfo = mapper.selectOne(storageWrapper);
                 if (fileInfo.getFileAbsPath() != null) {
-                    List<FileInfo> fileList = userStorageService.getFileList(fileInfo, "", path);
-                    if(fileInfo != null){
-                        PageStructure<FileInfo> pageStructure = new PageStructure<>();
-                        pageStructure.setTotal((long) fileList.size());
-                        pageStructure.setData(fileList);
+                    PageStructure<FileInfo> pageStructure = userStorageService.getFileList(fileInfo, "", path,page_size,current_page);
+                    if(pageStructure != null){
                         return pageStructure;
                     }
                 }
@@ -259,6 +279,7 @@ public class FileServiceImpl implements FileService {
         FileInfo fileInfo = new FileInfo();
         fileInfo.setFileId(IdUtil.getSnowflakeNextIdStr());
         fileInfo.setFileName(dto.getFolderName());
+        fileInfo.setFileAbsPath(dto.getAbsPath());
         fileInfo.setFilePath(dto.getFilePath());
         fileInfo.setFileType("folder");
         fileInfo.setFileOwner((String) StpUtil.getLoginId());
@@ -315,6 +336,7 @@ public class FileServiceImpl implements FileService {
             share.setSharePwd(RandomUtil.randomNumbers(6));
         }
         share.setShareUrl(config.getClientBaseURL() + "/ui#/share?id=" + share.getShareId() + "&pwd=" + share.getSharePwd());
+
         shareMapper.insert(share);
         return share;
     }
@@ -424,6 +446,13 @@ public class FileServiceImpl implements FileService {
     @Override
     public void reNameFile(FileInfo fileInfo) {
         // 通过ID查询文件并修改名称
+        String fileAbsPath = fileInfo.getFileAbsPath();
+        String[] split = fileAbsPath.split(":");
+        UserStorage userStorage = userStorageMapper.selectById(split[1]);
+        if(userStorage != null) {
+            userStorageService.reNameFile(userStorage, fileInfo);
+            return;
+        }
         FileInfo sourceData = mapper.selectById(fileInfo.getFileId());
         sourceData.setFileName(fileInfo.getFileName());
         sourceData.setUpdateTime(new Date());
@@ -434,12 +463,22 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void moveToRrecovery(String fileId) {
+    public void moveToRrecovery(FileInfo source) {
+
+        String fileAbsPath = source.getFileAbsPath();
+        String[] split = fileAbsPath.split(":");
+        if(split.length > 1) {
+            UserStorage userStorage = userStorageMapper.selectById(split[1]);
+            if(userStorage != null) {
+                userStorageService.deleteFile(userStorage, source);
+                return;
+            }
+        }
         User user = userService.getUserById(StpUtil.getLoginId());
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper
                 .eq("file_owner", user.getId())
-                .eq("file_id", fileId);
+                .eq("file_id", source.getFileId());
         FileInfo fileInfo = mapper.selectOne(queryWrapper);
         if (fileInfo == null) {
             throw new NullPointerException("无效文件");
@@ -482,6 +521,20 @@ public class FileServiceImpl implements FileService {
         mapper.updateById(fileInfo);
         user.setUsedStorage(user.getUsedStorage() + fileInfo.getFileSize());
         userService.updateUser(user);
+    }
+
+    @Override
+    public void downloadEx(String fileAbsPath,String filePath, HttpServletResponse response) {
+        if(fileAbsPath == null) {
+            return;
+        }
+        String[] split = fileAbsPath.split(":");
+        if(split.length > 1) {
+            UserStorage userStorage = userStorageMapper.selectById(split[1]);
+            if(userStorage!=null){
+                userStorageService.download(userStorage, filePath, response);
+            }
+        }
     }
 
     @SneakyThrows

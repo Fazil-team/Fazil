@@ -1,17 +1,19 @@
 package cn.mrcsh.zfcloudpanbackend.entity.po;
 
+import cn.hutool.core.io.FileUtil;
 import cn.mrcsh.zfcloudpanbackend.entity.structure.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("t_file_info")
-public class FileInfo extends BaseEntity {
+public class FileInfo extends BaseEntity implements Comparable<FileInfo> {
     // 文件ID
     @TableId
     private String fileId;
@@ -42,4 +44,17 @@ public class FileInfo extends BaseEntity {
     // 文件
     @TableField(exist = false)
     MultipartFile file;
+
+    @Override
+    public int compareTo(@NotNull FileInfo o) {
+        // 第一步：文件夹在前
+        if (this.getFileType().equals("folder") && !o.getFileType().equals("folder")) {
+            return -1;
+        } else if (!this.getFileType().equals("folder") && o.getFileType().equals("folder")) {
+            return 1;
+        }
+
+        // 第二步：按文件类型（扩展名）排序
+        return FileUtil.getSuffix(this.getFileName()).compareTo(FileUtil.getSuffix(o.getFileName()));
+    }
 }

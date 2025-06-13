@@ -1,6 +1,8 @@
 package cn.mrcsh.zfcloudpanbackend.entity.po;
 
 import cn.mrcsh.zfcloudpanbackend.entity.structure.BaseEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @TableName("t_user_storage")
 public class UserStorage extends BaseEntity {
+    @TableId(type = IdType.AUTO)
     private String id;
     private String userId;
     private String name;

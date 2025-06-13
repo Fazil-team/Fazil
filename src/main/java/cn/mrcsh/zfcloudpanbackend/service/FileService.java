@@ -50,9 +50,11 @@ public interface FileService {
 
     void reNameFile(FileInfo fileInfo);
 
-    void moveToRrecovery(String fileId);
+    void moveToRrecovery(FileInfo fileInfo);
 
     PageStructure<FileInfo> getDeletedFile(Integer pageSize, Integer currentPage, String sort);
 
     void unMoveToRecovery(String fileId);
+
+    void downloadEx(String fileAbsPath,String filePath, HttpServletResponse response);
 }

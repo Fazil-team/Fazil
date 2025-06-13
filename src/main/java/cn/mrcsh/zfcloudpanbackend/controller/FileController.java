@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -68,6 +69,7 @@ public class FileController extends BaseController {
     @SaCheckLogin
     public response getFiles(HttpServletRequest request, String path,String fileAbsPath, Integer page_size, Integer current_page, String sort, String fileName) {
         PageStructure<FileInfo> page = fileService.getFileList(request, path,fileAbsPath, page_size,current_page,sort, fileName);
+        Collections.sort(page.getData());
         return success(page);
     }
 
@@ -78,16 +80,21 @@ public class FileController extends BaseController {
         return success();
     }
 
-    @DeleteMapping("")
+    @PostMapping("/del")
     @SaCheckLogin
-    public response deleteFile(String file_id){
-        fileService.moveToRrecovery(file_id);
+    public response deleteFile(@RequestBody FileInfo fileInfo){
+        fileService.moveToRrecovery(fileInfo);
         return success();
     }
 
     @GetMapping("/download_file")
     public void download_file(HttpServletRequest request, HttpServletResponse response, String file_id) throws IOException {
         fileService.download(request, response, file_id);
+    }
+
+    @GetMapping("/ex/download")
+    public void download_ex(String fileAbsPath,String filePath, HttpServletResponse response) throws IOException {
+        fileService.downloadEx(fileAbsPath,filePath, response);
     }
 
 //    @GetMapping("/perview/{accessKey}")
@@ -161,12 +168,14 @@ public class FileController extends BaseController {
     }
 
     @GetMapping("/rec")
+    @SaCheckLogin
     public response getRecFile(Integer page_size, Integer current_page, String sort){
        PageStructure<FileInfo> fileInfoPageStructure = fileService.getDeletedFile(page_size, current_page, sort);
        return success(fileInfoPageStructure);
     }
 
     @PutMapping("/unmove_to_storage")
+    @SaCheckLogin
     public response unMoveToRecovery(String file_id){
         fileService.unMoveToRecovery(file_id);
         return success();

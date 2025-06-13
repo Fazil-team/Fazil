@@ -87,12 +87,14 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/storage")
+    @SaCheckLogin
     public response getStorage() {
         UserStorageVo storageVo = userService.getUserStorage();
         return success(storageVo);
     }
 
     @PostMapping("/change_user_avatar")
+    @SaCheckLogin
     public response setUserAvatar(MultipartFile file){
         userService.changeAvarar(file);
         return success();

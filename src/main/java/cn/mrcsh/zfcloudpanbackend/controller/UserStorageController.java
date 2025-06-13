@@ -1,11 +1,16 @@
 package cn.mrcsh.zfcloudpanbackend.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.mrcsh.zfcloudpanbackend.entity.dto.StorageConfigDTO;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.entity.po.UserStorage;
+import cn.mrcsh.zfcloudpanbackend.entity.structure.PageStructure;
+import cn.mrcsh.zfcloudpanbackend.mapper.FileInfoMapper;
+import cn.mrcsh.zfcloudpanbackend.mapper.UserStorageMapper;
 import cn.mrcsh.zfcloudpanbackend.service.UserStorageService;
 import com.alibaba.fastjson2.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,14 +21,18 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/expansion")
+@CrossOrigin
+@ConditionalOnProperty(name = "app.installed", havingValue = "true")
 public class UserStorageController extends BaseController {
 
     @Autowired
     private UserStorageService userStorageService;
 
     @GetMapping
-    public response getAllExpansion() {
-        return success();
+    @SaCheckLogin
+    public response getAllExpansion(Integer page_size, Integer current_page) {
+        PageStructure<UserStorage> userStorages = userStorageService.getAll(page_size, current_page);
+        return success(userStorages);
     }
 
     @PostMapping
@@ -31,40 +40,28 @@ public class UserStorageController extends BaseController {
         UserStorage userStorage = new UserStorage();
         userStorage.setConfigJson(JSON.toJSONString(storage.getConfig()));
         userStorage.setType(storage.getType());
+        userStorage.setName(storage.getName());
         userStorageService.newStorage(userStorage);
         return success();
     }
 
+    @PostMapping("/check_connect")
+    @SaCheckLogin
+    public response checkConnect(@RequestBody StorageConfigDTO storage) {
+       boolean isSuccess = userStorageService.checkConnect(storage);
+       return success(isSuccess);
+    }
     @PutMapping
-    public response updateExpansion() {
+    @SaCheckLogin
+    public response updateExpansion(@RequestBody UserStorage storage) {
+        userStorageService.changeExpansion(storage);
         return success();
     }
 
-    @DeleteMapping
-    public response deleteExpansion() {
-        return success();
-    }
-
-    /// /////第三方文件抽象接口//// ///
-
-    @GetMapping("/file")
-    public response getFiles(String storageId, String path) {
-//       List<FileInfo> fileInfos = userStorageService.getFileList(storageId, path);
-        return success();
-    }
-
-    @PostMapping("/file")
-    public response uploadFile(@RequestParam("file") MultipartFile file) {
-     return success();
-    }
-
-    @PutMapping("/file")
-    public response updateFile() {
-        return success();
-    }
-
-    @DeleteMapping("/file")
-    public response deleteFile() {
+    @DeleteMapping("/{id}")
+    @SaCheckLogin
+    public response deleteExpansion(@PathVariable String id) {
+        userStorageService.removeExpansion(id);
         return success();
     }
 }

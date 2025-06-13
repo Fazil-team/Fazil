@@ -159,14 +159,6 @@ CREATE TABLE `t_role` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1880809480 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of t_role
--- ----------------------------
-BEGIN;
-INSERT INTO `t_role` (`id`, `role_name`, `menu_ids`, `auth_ids`, `deleted`, `create_time`, `update_time`) VALUES (1, '管理员', '[1,57,2,3,4,5,6,33,7,8,9,10,32,11,28,29,30,31,23,39,43,48,54,55,50,51,52,56]', '[57,4,5,6,33,8,9,10,32,28,29,30,31,39,43,48,54,50,51,52,55,56]', 0, '2024-07-13 14:17:16', '2024-07-13 14:17:18');
-INSERT INTO `t_role` (`id`, `role_name`, `menu_ids`, `auth_ids`, `deleted`, `create_time`, `update_time`) VALUES (1880809478, '用户', '[55,50,51,52]', '[50,51,52,55]', 0, NULL, NULL);
-COMMIT;
-
--- ----------------------------
 -- Table structure for t_setting
 -- ----------------------------
 DROP TABLE IF EXISTS `t_setting`;

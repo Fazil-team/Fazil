@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userRegisterDto.getEmail());
             user.setCreateTime(new Date());
             user.setUpdateTime(new Date());
-            user.setRole(1880809478);
+            user.setRole(2);
             user.setUsedStorage(0);
             user.setStorage(appConfig.getInitUserSize()*1024*1024*1024);
             user.setSettings("{}");
