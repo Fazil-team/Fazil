@@ -1,0 +1,1 @@
+function r(){return r=Object.assign?Object.assign.bind():function(a){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var t in n)({}).hasOwnProperty.call(n,t)&&(a[t]=n[t])}return a},r.apply(null,arguments)}const o=Object.freeze(Object.defineProperty({__proto__:null,get default(){return r}},Symbol.toStringTag,{value:"Module"}));export{r as _,o as a};
