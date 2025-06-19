@@ -1,8 +1,13 @@
 package cn.mrcsh.zfcloudpanbackend.enums;
 
 public enum StorageType {
+
     WEBDAV("webdav", "webdav"),
-    _123Pan("123Pan", "123Pan"),
+    FTP("ftp", "ftp"),
+    SFTP("sftp", "sftp"),
+    NFS("nfs", "nfs"),
+    S3("s3", "s3"),
+    SMB("smb", "smb")
     ;
     private String type;
     private String desc;

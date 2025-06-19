@@ -23,7 +23,7 @@ public interface UserStorageService {
 
     void download(UserStorage userStorage, String filePath, HttpServletResponse response);
 
-    boolean checkConnect(StorageConfigDTO storage);
+    boolean checkConnect(UserStorage storage);
 
     PageStructure<UserStorage> getAll(Integer pageSize, Integer currentPage);
 

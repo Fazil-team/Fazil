@@ -163,11 +163,11 @@ public class UserStorageServiceImpl implements UserStorageService {
     }
 
     @Override
-    public boolean checkConnect(StorageConfigDTO storage) {
+    public boolean checkConnect(UserStorage storage) {
         StorageType storageType = StorageType.getStorageType(storage.getType());
         switch (storageType) {
             case WEBDAV -> {
-                StorageService service = StorageServiceFactory.getService(storageType.getType(), storage.getConfig(),"0");
+                StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(storage.getConfigJson(), new TypeReference<Map<String, String>>() {}),"0");
                 service.checkConnect();
                 return true;
             }

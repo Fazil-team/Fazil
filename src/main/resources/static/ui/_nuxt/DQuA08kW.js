@@ -1,0 +1,1 @@
+import{S as o,T as s}from"./DeTcoawS.js";const i=()=>new Promise(t=>{o.get("https://v1.hitokoto.cn/").then(e=>{t(e)})}),n=()=>new Promise(t=>{s.get("/stream/last_file").then(e=>{t(e)})});export{i as getHitokoto,n as load_last_file};

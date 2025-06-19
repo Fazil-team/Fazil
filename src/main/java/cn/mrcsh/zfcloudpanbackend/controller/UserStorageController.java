@@ -47,7 +47,7 @@ public class UserStorageController extends BaseController {
 
     @PostMapping("/check_connect")
     @SaCheckLogin
-    public response checkConnect(@RequestBody StorageConfigDTO storage) {
+    public response checkConnect(@RequestBody UserStorage storage) {
        boolean isSuccess = userStorageService.checkConnect(storage);
        return success(isSuccess);
     }
