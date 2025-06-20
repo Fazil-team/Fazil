@@ -447,11 +447,13 @@ public class FileServiceImpl implements FileService {
     public void reNameFile(FileInfo fileInfo) {
         // 通过ID查询文件并修改名称
         String fileAbsPath = fileInfo.getFileAbsPath();
-        String[] split = fileAbsPath.split(":");
-        UserStorage userStorage = userStorageMapper.selectById(split[1]);
-        if(userStorage != null) {
-            userStorageService.reNameFile(userStorage, fileInfo);
-            return;
+        if(fileAbsPath != null && !fileAbsPath.isEmpty()) {
+            String[] split = fileAbsPath.split(":");
+            UserStorage userStorage = userStorageMapper.selectById(split[1]);
+            if(userStorage != null) {
+                userStorageService.reNameFile(userStorage, fileInfo);
+                return;
+            }
         }
         FileInfo sourceData = mapper.selectById(fileInfo.getFileId());
         sourceData.setFileName(fileInfo.getFileName());
@@ -464,14 +466,15 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void moveToRrecovery(FileInfo source) {
-
         String fileAbsPath = source.getFileAbsPath();
-        String[] split = fileAbsPath.split(":");
-        if(split.length > 1) {
-            UserStorage userStorage = userStorageMapper.selectById(split[1]);
-            if(userStorage != null) {
-                userStorageService.deleteFile(userStorage, source);
-                return;
+        if(fileAbsPath != null && !fileAbsPath.isEmpty()) {
+            String[] split = fileAbsPath.split(":");
+            if(split.length > 1) {
+                UserStorage userStorage = userStorageMapper.selectById(split[1]);
+                if(userStorage != null) {
+                    userStorageService.deleteFile(userStorage, source);
+                    return;
+                }
             }
         }
         User user = userService.getUserById(StpUtil.getLoginId());

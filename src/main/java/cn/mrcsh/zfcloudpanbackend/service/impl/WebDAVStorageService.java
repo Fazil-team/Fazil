@@ -1,6 +1,7 @@
 package cn.mrcsh.zfcloudpanbackend.service.impl;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.mrcsh.zfcloudpanbackend.entity.po.FileInfo;
 import cn.mrcsh.zfcloudpanbackend.enums.FileTypes;
 import cn.mrcsh.zfcloudpanbackend.enums.StorageType;
@@ -75,7 +76,7 @@ public class WebDAVStorageService implements StorageService {
     public void download(String path, HttpServletResponse response) {
         try {
             Sardine sardine = SardineFactory.begin(username, password);
-            InputStream inputStream = sardine.get(baseUrl + path);
+            InputStream inputStream = sardine.get(URLUtil.encode(baseUrl + path));
             response.setHeader("Content-Disposition", "inline;fileName=" + URLEncoder.encode(Paths.get(path).getFileName().toString(), StandardCharsets.UTF_8));
             byte[] buffer = new byte[8192];
             int bytesRead;
@@ -97,7 +98,7 @@ public class WebDAVStorageService implements StorageService {
         try {
             Sardine sardine = SardineFactory.begin(username, password);
             String url = baseUrl + fileInfo.getFilePath();
-            sardine.delete(url);
+            sardine.delete(URLUtil.encode(url));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,7 +115,7 @@ public class WebDAVStorageService implements StorageService {
             Sardine sardine = SardineFactory.begin(username, password);
             String oldPath = baseUrl + fileInfo.getFilePath();
             String newPath = baseUrl + Paths.get(fileInfo.getFilePath()).getParent().resolve(fileInfo.getFileName()).toString();
-            sardine.move(oldPath, newPath);
+            sardine.move(URLUtil.encode(oldPath), URLUtil.encode(newPath));
         } catch (Exception e) {
             e.printStackTrace();
         }

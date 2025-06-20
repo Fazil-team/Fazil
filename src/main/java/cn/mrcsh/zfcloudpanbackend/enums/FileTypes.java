@@ -13,7 +13,7 @@ public enum FileTypes {
     TXT("txt", new String[]{".txt"}),
     AUDIO("audio", new String[]{".mp3", ".wav", ".aac", ".flac", ".ogg", ".wma", ".m4a"}),
     DB("db", new String[]{".db", ".sqlite", ".mdb", ".accdb"}),
-    _3D("3d", new String[]{".stl", ".obj", ".fbx", ".step", ".iges", ".dwg", ".dxf"}),
+    _3D("3d", new String[]{".stl", ".obj", ".fbx", ".step", ".iges", ".dwg", ".dxf", ".3mf"}),
     FOLDER("folder", new String[]{""}),
     UNKNOWN("unknown", new String[]{""}),
     ;
