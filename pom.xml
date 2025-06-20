@@ -228,7 +228,7 @@
                             <!-- 外部依赖jar包的最终位置 -->
                             <classpathPrefix>lib/</classpathPrefix>
                             <!-- 项目启动类 -->
-                            <mainClass>cn.mrcsh.zfcloudpanbackend.ZfCloudPanBackendApplication</mainClass>
+                            <mainClass>cn.mrcsh.fazil.Fazil</mainClass>
                         </manifest>
                     </archive>
                     <!--资源文件不打进jar包中，做到配置跟项目分离的效果-->
