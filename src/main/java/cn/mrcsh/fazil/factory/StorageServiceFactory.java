@@ -2,7 +2,8 @@ package cn.mrcsh.fazil.factory;
 
 import cn.mrcsh.fazil.enums.StorageType;
 import cn.mrcsh.fazil.service.StorageService;
-import cn.mrcsh.fazil.service.impl.WebDAVStorageService;
+import cn.mrcsh.fazil.service.storage.impl.FTPStorageService;
+import cn.mrcsh.fazil.service.storage.impl.WebDAVStorageService;
 
 import java.util.Map;
 
@@ -11,8 +12,10 @@ public class StorageServiceFactory {
         StorageType storageType = StorageType.getStorageType(type);
         return switch (storageType) {
             case WEBDAV -> new WebDAVStorageService(
-                    config.get("baseUrl"),config.get("folder"), config.get("username"), config.get("password"),id
+                    config.get("baseUrl"), config.get("folder"), config.get("username"), config.get("password"), id
             );
+            case FTP ->
+                    new FTPStorageService(config.get("host"), Integer.parseInt(config.get("port")), config.get("username"), config.get("password"), id);
             default -> throw new IllegalArgumentException("不支持的存储类型：" + type);
         };
     }

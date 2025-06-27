@@ -73,6 +73,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/kick")
+    @SaCheckPermission("sys:user:kick")
     public response kickUser(@RequestParam String user_id){
         WSManager.send2Session(user_id, WSType.KICK, "踢出");
         StpUtil.kickout(user_id);

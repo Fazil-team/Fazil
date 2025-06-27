@@ -19,6 +19,7 @@ import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -46,13 +47,13 @@ public class UserStorageServiceImpl implements UserStorageService {
         FolderDto folderDto = new FolderDto();
         folderDto.setFolderName(userStorage.getName());
         folderDto.setFilePath("/");
-        folderDto.setAbsPath(userStorage.getType()+":"+userStorage.getId()+"/");
+        folderDto.setAbsPath(userStorage.getType() + ":" + userStorage.getId() + "/");
         fileService.createFolder(folderDto);
     }
 
     @Override
     public PageStructure<FileInfo> getFileList(FileInfo fileInfo, String storageId, String path, Integer page_size, Integer current_page) {
-        if(fileInfo.getFileAbsPath() == null){
+        if (fileInfo.getFileAbsPath() == null) {
             return null;
         }
         String[] split = fileInfo.getFileAbsPath().substring(0, fileInfo.getFileAbsPath().length() - 1).split(":");
@@ -72,58 +73,35 @@ public class UserStorageServiceImpl implements UserStorageService {
         int total;
         int from = Math.max(0, (current_page - 1) * page_size);
         int to;
-        switch (storageType) {
-            case WEBDAV -> {
-                StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
-                }),split[1]);
-                List<FileInfo> fileInfos = service.listFiles(realPath);
-                Collections.sort(fileInfos);
-                total = fileInfos.size();
-                to = Math.min(total, from + page_size);
-                PageStructure<FileInfo> pageStructure = new PageStructure<>();
-                pageStructure.setCurrent_page(current_page);
-                pageStructure.setPage_size(page_size);
-                pageStructure.setTotal((long) total);
-                List<FileInfo> pagedFileList = fileInfos.subList(from, to);
-                pageStructure.setData(pagedFileList);
-                return pageStructure;
-            }
-            default -> {
-                return null;
-            }
-        }
+        StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
+        }), split[1]);
+        List<FileInfo> fileInfos = service.listFiles(realPath);
+        Collections.sort(fileInfos);
+        total = fileInfos.size();
+        to = Math.min(total, from + page_size);
+        PageStructure<FileInfo> pageStructure = new PageStructure<>();
+        pageStructure.setCurrent_page(current_page);
+        pageStructure.setPage_size(page_size);
+        pageStructure.setTotal((long) total);
+        List<FileInfo> pagedFileList = fileInfos.subList(from, to);
+        pageStructure.setData(pagedFileList);
+        return pageStructure;
     }
 
     @Override
     public void reNameFile(UserStorage userStorage, FileInfo fileInfo) {
         StorageType storageType = StorageType.getStorageType(userStorage.getType());
-        switch (storageType) {
-            case WEBDAV -> {
-                StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
-                }),userStorage.getId());
-
-                service.reNameFile(fileInfo);
-            }
-            default -> {
-
-            }
-        }
+        StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
+        }), userStorage.getId());
+        service.reNameFile(fileInfo);
     }
 
     @Override
     public void deleteFile(UserStorage userStorage, FileInfo source) {
         StorageType storageType = StorageType.getStorageType(userStorage.getType());
-        switch (storageType) {
-            case WEBDAV -> {
-                StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
-                }),userStorage.getId());
-
-                service.delete(source);
-            }
-            default -> {
-
-            }
-        }
+        StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
+        }), userStorage.getId());
+        service.delete(source);
     }
 
     @Override
@@ -133,44 +111,27 @@ public class UserStorageServiceImpl implements UserStorageService {
         String storageId = split[1].substring(0, split[1].length() - 1);
         UserStorage userStorage = userStorageMapper.selectById(storageId);
         StorageType storageType = StorageType.getStorageType(userStorage.getType());
-        switch (storageType) {
-            case WEBDAV -> {
-                StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
-                }),userStorage.getId());
-                service.upload(uploadFile,ex, source);
-                FileUtil.del(source);
-            }
-            default -> {}
-        }
+        StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
+        }), userStorage.getId());
+        service.upload(uploadFile, ex, source);
+        FileUtil.del(source);
     }
 
     @Override
     public void download(UserStorage userStorage, String filePath, HttpServletResponse response) {
         StorageType storageType = StorageType.getStorageType(userStorage.getType());
-        switch (storageType) {
-            case WEBDAV -> {
-                StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
-                }),userStorage.getId());
-
-                service.download(filePath, response);
-            }
-            default -> {
-
-            }
-        }
+        StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
+        }), userStorage.getId());
+        service.download(filePath, response);
     }
 
     @Override
     public boolean checkConnect(UserStorage storage) {
         StorageType storageType = StorageType.getStorageType(storage.getType());
-        switch (storageType) {
-            case WEBDAV -> {
-                StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(storage.getConfigJson(), new TypeReference<Map<String, String>>() {}),"0");
-                service.checkConnect();
-                return true;
-            }
-        }
-        return false;
+        StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(storage.getConfigJson(), new TypeReference<Map<String, String>>() {
+        }), "0");
+        service.checkConnect();
+        return true;
     }
 
     @Override
@@ -192,7 +153,7 @@ public class UserStorageServiceImpl implements UserStorageService {
         UserStorage userStorage = userStorageMapper.selectById(id);
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("file_owner", StpUtil.getLoginIdAsLong())
-                .eq("file_abs_path", userStorage.getType()+":"+userStorage.getId()+"/");
+                .eq("file_abs_path", userStorage.getType() + ":" + userStorage.getId() + "/");
         fileInfoMapper.delete(queryWrapper);
         userStorageMapper.deleteById(id);
     }
@@ -202,10 +163,22 @@ public class UserStorageServiceImpl implements UserStorageService {
         UserStorage userStorage = userStorageMapper.selectById(storage.getId());
         QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("file_owner", StpUtil.getLoginIdAsLong())
-                .eq("file_abs_path", userStorage.getType()+":"+userStorage.getId()+"/");
+                .eq("file_abs_path", userStorage.getType() + ":" + userStorage.getId() + "/");
         FileInfo fileInfo = fileInfoMapper.selectOne(queryWrapper);
         fileInfo.setFileName(storage.getName());
         fileInfoMapper.updateById(fileInfo);
         userStorageMapper.updateById(storage);
+    }
+
+    @Override
+    public void createFolder(FileInfo ex, FolderDto folder) {
+        String fileAbsPath = ex.getFileAbsPath();
+        String[] split = fileAbsPath.split(":");
+        String storageId = split[1].substring(0, split[1].length() - 1);
+        UserStorage userStorage = userStorageMapper.selectById(storageId);
+        StorageType storageType = StorageType.getStorageType(userStorage.getType());
+        StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(userStorage.getConfigJson(), new TypeReference<HashMap<String, String>>() {
+        }), userStorage.getId());
+        service.createFolder(userStorage ,folder);
     }
 }

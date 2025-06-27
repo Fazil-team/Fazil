@@ -1,0 +1,2 @@
+FROM debian
+COPY jdk-21_linux-x64_bin.deb /

@@ -1,0 +1,1 @@
+import{Q as n}from"./C_prpByR.js";const c=e=>new Promise(t=>{console.log(e.file.file);const o=new FormData;o.append("file",e.file.file),n.post("/license/check",o,{headers:{"Content-Type":"multipart/form-data"}}).then(r=>{t(r)})});export{c as check};

@@ -1,0 +1,1 @@
+import{s}from"./DlFM5AQD.js";import{n,K as a,L as r,M as i}from"./C_prpByR.js";const f=n({__name:"index",setup(l){const e=a(r()).setting;let t=s(()=>{e.value.title&&(i({title:`${e.value.title} 管理后台｜ 公告管理`}),clearInterval(t))},100);return(o,u)=>null}});export{f as default};

@@ -1,6 +1,7 @@
 package cn.mrcsh.fazil.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.io.FileUtil;
 import cn.mrcsh.fazil.config.APPConfig;
 import cn.mrcsh.fazil.config.Temp;
@@ -37,6 +38,7 @@ public class SettingsController extends BaseController {
 
     @PutMapping
     @SaCheckLogin
+    @SaCheckPermission("sys:set:save")
     public response saveSetting(@RequestBody SysSettings setting) {
         service.update(setting);
         return success();
@@ -46,11 +48,13 @@ public class SettingsController extends BaseController {
     public response settings() {
         SysSettings sysSettings = service.getSysSettings();
         sysSettings.setRegister(Temp.isAutoCheck);
+        sysSettings.setSmtpPassword("********");
         return success(sysSettings);
     }
 
     @PostMapping("/upload/{action}")
     @SaCheckLogin
+    @SaCheckPermission("sys:set:save")
     public response upload(@RequestParam("file") MultipartFile file, @PathVariable Integer action) throws IOException {
         String upload = "";
 //        minioUtils.upload(file);
@@ -96,6 +100,7 @@ public class SettingsController extends BaseController {
 
     @PostMapping("/import_ui")
     @SaCheckLogin
+    @SaCheckPermission("sys:set:save")
     public response change_ui(MultipartFile file) throws IOException {
         service.importUI(file);
         return success();

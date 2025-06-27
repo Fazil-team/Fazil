@@ -1,8 +1,11 @@
 ${AnsiColor.BRIGHT_CYAN}===================================================================================================
-${AnsiColor.BRIGHT_CYAN} _____ _____ _____ _           _ _____
-${AnsiColor.BRIGHT_CYAN}|__   |   __|     | |___ _ _ _| |  _  |___ ___
-${AnsiColor.BRIGHT_CYAN}|   __|   __|   --| | . | | | . |   __| .'|   |
-${AnsiColor.BRIGHT_CYAN}|_____|__|  |_____|_|___|___|___|__|  |__,|_|_|
+${AnsiColor.CYAN}░▒▓████████▓▒░▒▓██████▓▒░░▒▓████████▓▒░▒▓█▓▒░▒▓█▓▒░
+${AnsiColor.CYAN}░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░
+${AnsiColor.CYAN}░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░    ░▒▓██▓▒░░▒▓█▓▒░▒▓█▓▒░
+${AnsiColor.CYAN}░▒▓██████▓▒░░▒▓████████▓▒░  ░▒▓██▓▒░  ░▒▓█▓▒░▒▓█▓▒░
+${AnsiColor.CYAN}░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░░▒▓██▓▒░    ░▒▓█▓▒░▒▓█▓▒░
+${AnsiColor.CYAN}░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░
+${AnsiColor.CYAN}░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░▒▓█▓▒░▒▓████████▓▒░
 ${AnsiColor.WHITE} Druid 监控地址: http://127.0.0.1:${server.port}/druid/login.html
 ${AnsiColor.WHITE} Druid 账号: ${spring.datasource.druid.stat-view-servlet.login-username}
 ${AnsiColor.WHITE} Druid 密码: ${spring.datasource.druid.stat-view-servlet.login-password}

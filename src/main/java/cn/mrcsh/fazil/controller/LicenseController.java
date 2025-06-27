@@ -1,5 +1,6 @@
 package cn.mrcsh.fazil.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
@@ -25,6 +26,7 @@ public class LicenseController extends BaseController{
 
     @PostMapping("/check")
     @SneakyThrows
+    @SaCheckPermission("sys:unlock")
     public response checkLicense(MultipartFile file) {
         HttpRequest request = HttpUtil.createRequest(Method.POST, "http://host.mrcsh.cn:6081/rsa/decode/" + SerialNumberUtil.getHwid());
         File licenseFolder = new File(System.getProperty("user.dir") + "/license");

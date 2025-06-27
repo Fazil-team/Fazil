@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -60,7 +61,7 @@ public class MonitorController extends BaseController {
     @SaCheckLogin
     @SaCheckPermission("sys:monitor:query")
     public response getFileCount(){
-        MonitorVo monitorVo = monitorService.selectMonitor(MONITOR_TYPE.DOWNLOAD,DateUtil.offsetDay(new Date(), -31), new Date());
+        MonitorVo monitorVo = monitorService.selectMonitor(MONITOR_TYPE.DOWNLOAD_COUNT,DateUtil.offsetDay(new Date(), -31), new Date());
         return success(monitorVo);
     }
 
@@ -68,9 +69,15 @@ public class MonitorController extends BaseController {
     @SaCheckLogin
     @SaCheckPermission("sys:monitor:query")
     public response flux(){
-        MonitorVo monitorVo = monitorService.selectMonitor(MONITOR_TYPE.NETWORK,DateUtil.offsetDay(new Date(), -31), new Date());
+        Map<String, MonitorVo> result = new HashMap<>();
+        MonitorVo monitorVo = monitorService.selectMonitor(MONITOR_TYPE.DOWNLOAD_FLEX,DateUtil.offsetDay(new Date(), -31), new Date());
         monitorVo.getTime().add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        monitorVo.getData().add(Temp.MonitorCache.get(MONITOR_TYPE.NETWORK.getType()));
-        return success(monitorVo);
+        monitorVo.getData().add(Temp.MonitorCache.get(MONITOR_TYPE.DOWNLOAD_FLEX.getType()) == null?0:Temp.MonitorCache.get(MONITOR_TYPE.DOWNLOAD_FLEX.getType()));
+        result.put("download", monitorVo);
+        MonitorVo monitorUpload = monitorService.selectMonitor(MONITOR_TYPE.UPLOAD_FLEX,DateUtil.offsetDay(new Date(), -31), new Date());
+        monitorUpload.getTime().add(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        monitorUpload.getData().add(Temp.MonitorCache.get(MONITOR_TYPE.UPLOAD_FLEX.getType()) == null?0:Temp.MonitorCache.get(MONITOR_TYPE.UPLOAD_FLEX.getType()));
+        result.put("upload", monitorUpload);
+        return success(result);
     }
 }

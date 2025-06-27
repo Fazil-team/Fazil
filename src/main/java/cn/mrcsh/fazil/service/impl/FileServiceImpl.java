@@ -223,8 +223,8 @@ public class FileServiceImpl implements FileService {
             while ((bytesRead = fis.read(buffer)) != -1) {
                 try {
                     response.getOutputStream().write(buffer, 0, bytesRead);
-                    Temp.MonitorCache.put(MONITOR_TYPE.NETWORK.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.NETWORK.getType(), 0L) + bytesRead);
-                    log.info("vals: {}", Temp.MonitorCache.get(MONITOR_TYPE.NETWORK.getType()));
+                    Temp.MonitorCache.put(MONITOR_TYPE.DOWNLOAD_FLEX.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.DOWNLOAD_FLEX.getType(), 0L) + bytesRead);
+                    log.info("vals: {}", Temp.MonitorCache.get(MONITOR_TYPE.DOWNLOAD_FLEX.getType()));
                     Thread.sleep(10);
                 } catch (Exception e) {
                     log.error("Range协议暂未支持");
@@ -266,6 +266,18 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void createFolder(FolderDto dto) {
+        // 上传到第三方平台
+        String[] split = dto.getFilePath().split("/");
+        if(split.length > 1){
+            QueryWrapper<FileInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("file_name", split[1])
+                    .eq("file_owner", StpUtil.getLoginId());
+            FileInfo ex = mapper.selectOne(queryWrapper);
+            if(ex != null) {
+                userStorageService.createFolder(ex, dto);
+                return;
+            }
+        }
         QueryWrapper<FileInfo> fileInfoQueryWrapper = new QueryWrapper<>();
         fileInfoQueryWrapper.eq("file_owner", StpUtil.getLoginId()).eq("file_type", "folder");
         List<FileInfo> fileInfos = mapper.selectList(fileInfoQueryWrapper);
@@ -306,7 +318,7 @@ public class FileServiceImpl implements FileService {
             int bytesRead;
             while ((bytesRead = fis.read(buffer)) != -1) {
                 response.getOutputStream().write(buffer, 0, bytesRead);
-                Temp.MonitorCache.put(MONITOR_TYPE.NETWORK.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.NETWORK.getType(), 0L) + bytesRead);
+                Temp.MonitorCache.put(MONITOR_TYPE.DOWNLOAD_FLEX.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.DOWNLOAD_FLEX.getType(), 0L) + bytesRead);
             }
             response.getOutputStream().flush();
             response.getOutputStream().close();
@@ -545,7 +557,7 @@ public class FileServiceImpl implements FileService {
         int bytesRead;
         while ((bytesRead = fis.read(buffer)) != -1) {
             response.getOutputStream().write(buffer, 0, bytesRead);
-            Temp.MonitorCache.put(MONITOR_TYPE.NETWORK.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.NETWORK.getType(), 0L) + bytesRead);
+            Temp.MonitorCache.put(MONITOR_TYPE.DOWNLOAD_FLEX.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.DOWNLOAD_FLEX.getType(), 0L) + bytesRead);
         }
         response.getOutputStream().flush();
         response.getOutputStream().close();

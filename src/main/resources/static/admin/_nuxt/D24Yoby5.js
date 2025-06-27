@@ -1,0 +1,1 @@
+import{n as c,o as s,O as t,w as o,d as n}from"./C_prpByR.js";import{_ as p}from"./DxGMFuom.js";const f=c({__name:"MenuSys",props:["sys"],setup(_){const a=_;return(r,m)=>{const e=p;return a.sys=="sys"?(s(),t(e,{key:0,type:"success"},{default:o(()=>[n("后台")]),_:1})):(s(),t(e,{key:1,type:"info"},{default:o(()=>[n("前台")]),_:1}))}}});export{f as _};

@@ -53,8 +53,8 @@ public class FileUploaderHandler {
                 fileInfo.setStatus("completed");
             }
             fileId = fileInfo.getFileId();
-            Temp.MonitorCache.put(MONITOR_TYPE.NETWORK.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.NETWORK.getType(), 0L) + uploadFileDto.getFile().getSize());
-            log.info("vals: {}", Temp.MonitorCache.get(MONITOR_TYPE.NETWORK.getType()));
+            Temp.MonitorCache.put(MONITOR_TYPE.UPLOAD_FLEX.getType(), Temp.MonitorCache.getOrDefault(MONITOR_TYPE.UPLOAD_FLEX.getType(), 0L) + uploadFileDto.getFile().getSize());
+            log.info("vals: {}", Temp.MonitorCache.get(MONITOR_TYPE.UPLOAD_FLEX.getType()));
             fileService.save(fileInfo);
         }catch (Exception e){
             e.printStackTrace();

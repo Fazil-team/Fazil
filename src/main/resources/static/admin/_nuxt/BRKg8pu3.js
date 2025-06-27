@@ -1,1 +1,0 @@
-import{Q as t}from"./DJIGoAyo.js";const r=()=>new Promise(e=>{t.get("/monitor/user").then(o=>{e(o)})}),s=()=>new Promise(e=>{t.get("/monitor/get_api_count").then(o=>{e(o)})}),i=()=>new Promise(e=>{t.get("/monitor/flux").then(o=>{e(o)})});export{s as load_all_apis_count,i as load_all_flux,r as load_users_info};

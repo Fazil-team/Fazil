@@ -1,5 +1,6 @@
 package cn.mrcsh.fazil.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.mrcsh.fazil.config.Temp;
 import cn.mrcsh.fazil.entity.structure.InstallStructure;
 import cn.mrcsh.fazil.task.DatabaseInitialize;
@@ -34,6 +35,7 @@ public class InstallController extends BaseController {
 
     @PostMapping("/install")
     @Operation(tags = "安装")
+    @SaCheckPermission("sys:install")
     public response install(@RequestBody InstallStructure installStructure) {
         try {
             String realJdbcURL = jdbcUrl.replaceAll("#HOST",installStructure.getMysql_host())

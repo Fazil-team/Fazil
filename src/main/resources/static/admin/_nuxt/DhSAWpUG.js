@@ -1,0 +1,1 @@
+import{Q as n}from"./C_prpByR.js";const r=e=>{n.put("/setting",e).then(t=>{window.$message.success("保存成功")})},a=e=>new Promise(t=>{let s=new FormData;s.append("file",e),n.post("/setting/import_ui",s).then(o=>{t(o)})});export{r as save_setting,a as upload_ui};

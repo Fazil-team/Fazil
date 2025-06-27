@@ -1,6 +1,8 @@
 package cn.mrcsh.fazil.service;
 
+import cn.mrcsh.fazil.entity.dto.FolderDto;
 import cn.mrcsh.fazil.entity.po.FileInfo;
+import cn.mrcsh.fazil.entity.po.UserStorage;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.File;
@@ -14,4 +16,6 @@ public interface StorageService {
     String getDownloadUrl(String path);
     void reNameFile(FileInfo fileInfo);
     void checkConnect();
+
+    void createFolder(UserStorage userStorage,  FolderDto folder);
 }

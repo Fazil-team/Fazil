@@ -1,5 +1,6 @@
 package cn.mrcsh.fazil.service;
 
+import cn.mrcsh.fazil.entity.dto.FolderDto;
 import cn.mrcsh.fazil.entity.po.FileInfo;
 import cn.mrcsh.fazil.entity.po.UserStorage;
 import cn.mrcsh.fazil.entity.structure.PageStructure;
@@ -27,4 +28,6 @@ public interface UserStorageService {
     void removeExpansion(String id);
 
     void changeExpansion(UserStorage storage);
+
+    void createFolder(FileInfo ex, FolderDto folder);
 }

@@ -1,5 +1,6 @@
 package cn.mrcsh.fazil.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -91,6 +92,7 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/new_user")
+    @SaCheckPermission("sys:user:add")
     public response newUser(@RequestBody UserRegisterDto userRegisterDto) {
         userRegisterDto.setSeqId("1");
         userService.register(userRegisterDto);
