@@ -21,7 +21,7 @@ public interface UserStorageService {
 
     void download(UserStorage userStorage, String filePath, HttpServletResponse response);
 
-    boolean checkConnect(UserStorage storage);
+    Object checkConnect(UserStorage storage);
 
     PageStructure<UserStorage> getAll(Integer pageSize, Integer currentPage);
 

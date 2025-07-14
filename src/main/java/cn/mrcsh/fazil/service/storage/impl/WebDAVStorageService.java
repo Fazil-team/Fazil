@@ -128,7 +128,7 @@ public class WebDAVStorageService implements StorageService {
     }
 
     @Override
-    public void checkConnect() {
+    public Object checkConnect() {
         try {
             Sardine sardine = SardineFactory.begin(username, password);
             sardine.list(baseUrl);
@@ -136,16 +136,16 @@ public class WebDAVStorageService implements StorageService {
             e.printStackTrace();
             throw new NullPointerException("连接失败");
         }
-
+        return null;
     }
 
     @Override
-    public void createFolder(UserStorage userStorage,  FolderDto folder) {
+    public void createFolder(UserStorage userStorage, FolderDto folder) {
         try {
             Sardine sardine = SardineFactory.begin(username, password);
             String url = baseUrl + folder.getFilePath().replaceAll("/" + userStorage.getName(), "") + folder.getFolderName();
             sardine.createDirectory(url);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new NullPointerException("创建失败");
         }
 

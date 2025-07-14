@@ -1,0 +1,22 @@
+{
+  "accessToken": "eyJraWQiOiJLcU8iLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmODk0ZmY3NjExNjU0OTg3YjJlZjRmZjZlMWIzMzMzZSIsImF1ZCI6IjljNjZmODc1MmNmMzQzNzBiMDc3MTRiMTM0YWY2Nzk4IiwicyI6ImNkYSIsImQiOiIzNDk5OTA4ODEsNjM4NzkwNDQ0IiwiaXNzIjoiYWxpcGFuIiwiZXhwIjoxNzUyNDg1MTE0LCJpYXQiOjE3NTI0Nzc5MTEsImp0aSI6IjY4MWRiMjY0NGVkYTRhNzE4NDU1OGYzNDc0YmQ3YzdkIn0.dUsgEdEIFjXR6oHgG0259QVmQn5SM31KLq1zPw38WMM",
+  "authority": [
+    "user:base",
+    "file:all:read",
+    "file:all:write"
+  ],
+  "avatar": "https://img.aliyundrive.com/avatar/e19f4a1457f94ba7aed86d62137cce98.jpeg",
+  "clientId": "9c66f8752cf34370b07714b134af6798",
+  "clientSecret": "afeb66e283fc4e29a0049ead1d7046ee",
+  "driveId": "349990881",
+  "expiresIn": 7200,
+  "id": "0",
+  "loginAuthCode": "984481736cb54663a5d74514c19bbda5",
+  "loginStatus": "LoginSuccess",
+  "nickName": "起飞呐",
+  "oauthQrcode": "https://openapi.alipan.com/oauth/qrcode/175247790592d6224f28664f4c9eb2dc8cc4d0c3f8",
+  "oauthSid": "175247790592d6224f28664f4c9eb2dc8cc4d0c3f8",
+  "percent": 0.0,
+  "refreshToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJmODk0ZmY3NjExNjU0OTg3YjJlZjRmZjZlMWIzMzMzZSIsImF1ZCI6IjljNjZmODc1MmNmMzQzNzBiMDc3MTRiMTM0YWY2Nzk4IiwiZXhwIjoxNzYwMjUzOTExLCJpYXQiOjE3NTI0Nzc5MTEsImp0aSI6IjRjMGUzY2MyOGE3ZTRlMjA4ZWFkMGYzY2U2MjkzNzRmIn0.X5KAq8YspZxvOVV3-XgrHiSTeETih6n2NW6kcFbRRG9dX_I6VOnVhNEqeLgsyMDIeKXErzPRol5TGwba9JOT8A",
+  "tokenType": "Bearer"
+}

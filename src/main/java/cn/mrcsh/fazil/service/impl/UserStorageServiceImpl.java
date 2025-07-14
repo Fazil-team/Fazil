@@ -126,12 +126,11 @@ public class UserStorageServiceImpl implements UserStorageService {
     }
 
     @Override
-    public boolean checkConnect(UserStorage storage) {
+    public Object checkConnect(UserStorage storage) {
         StorageType storageType = StorageType.getStorageType(storage.getType());
         StorageService service = StorageServiceFactory.getService(storageType.getType(), JSON.parseObject(storage.getConfigJson(), new TypeReference<Map<String, String>>() {
         }), "0");
-        service.checkConnect();
-        return true;
+       return service.checkConnect();
     }
 
     @Override

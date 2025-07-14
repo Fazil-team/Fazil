@@ -46,9 +46,10 @@ public class UserStorageController extends BaseController {
         userStorage.setConfigJson(JSON.toJSONString(storage.getConfig()));
         userStorage.setType(storage.getType());
         userStorage.setName(storage.getName());
-       boolean isSuccess = userStorageService.checkConnect(userStorage);
-       return success(isSuccess);
+        userStorageService.checkConnect(userStorage);
+        return success(true);
     }
+
     @PutMapping
     @SaCheckLogin
     public response updateExpansion(@RequestBody UserStorage storage) {

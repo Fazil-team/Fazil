@@ -157,7 +157,7 @@ public class FTPStorageService implements StorageService {
     }
 
     @Override
-    public void checkConnect() {
+    public Object checkConnect() {
         try {
             FTPClient ftpClient = new FTPClient();
             ftpClient.connect(host, port);
@@ -168,6 +168,7 @@ public class FTPStorageService implements StorageService {
         } catch (Exception e) {
             throw new NullPointerException("连接失败: " + e.getMessage());
         }
+        return null;
     }
 
     @Override

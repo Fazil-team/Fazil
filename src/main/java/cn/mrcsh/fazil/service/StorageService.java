@@ -15,6 +15,6 @@ public interface StorageService {
     void delete(FileInfo path);
     String getDownloadUrl(String path);
     void reNameFile(FileInfo fileInfo);
-    void checkConnect();
+    Object checkConnect();
     void createFolder(UserStorage userStorage,  FolderDto folder);
 }

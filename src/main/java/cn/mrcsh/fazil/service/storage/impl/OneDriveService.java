@@ -41,8 +41,8 @@ public class OneDriveService implements StorageService {
     }
 
     @Override
-    public void checkConnect() {
-
+    public Object checkConnect() {
+        return null;
     }
 
     @Override

@@ -25,4 +25,5 @@ public class RedisConfig {
 
     public static final String KEY_OF_REG_EMAIL_CODE = "pan:email:code:";
     public static final String KEY_OF_REG_EMAIL_LOCK = "pan:email:lock:";
+    public static final String KEY_OF_ALIDRIVE_CONFIG = "pan:alidrive:config:";
 }

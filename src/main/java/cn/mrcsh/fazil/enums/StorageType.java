@@ -7,7 +7,8 @@ public enum StorageType {
     SFTP("sftp", "sftp"),
     NFS("nfs", "nfs"),
     S3("s3", "s3"),
-    SMB("smb", "smb")
+    SMB("smb", "smb"),
+    ALIDRIVE("alidrive", "alidrive"),
     ;
     private String type;
     private String desc;
